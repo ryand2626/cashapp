@@ -14,8 +14,26 @@ from typing import Generator
 
 from app.core.config import settings
 
-# Database engine
-engine = create_engine(settings.DATABASE_URL, echo=settings.DEBUG)
+# Database engine with connection pooling for production performance
+# Critical fix for menu API timeout issues
+from sqlalchemy.pool import QueuePool
+
+# Configure engine with proper connection pooling
+engine = create_engine(
+    settings.DATABASE_URL,
+    echo=settings.DEBUG,
+    poolclass=QueuePool,
+    pool_size=20,          # Number of persistent connections
+    max_overflow=10,       # Maximum overflow connections above pool_size
+    pool_recycle=3600,     # Recycle connections after 1 hour (avoid stale connections)
+    pool_pre_ping=True,    # Test connections before using (handles network issues)
+    pool_timeout=30,       # Timeout for getting connection from pool
+    connect_args={
+        "connect_timeout": 10,  # PostgreSQL connection timeout
+        "options": "-c statement_timeout=30000"  # 30 second statement timeout
+    } if "postgresql" in settings.DATABASE_URL else {}
+)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()

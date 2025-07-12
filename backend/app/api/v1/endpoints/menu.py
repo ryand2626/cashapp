@@ -6,6 +6,8 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
+import time
+import logging
 
 from app.core.database import get_db, Product, Category, User
 from app.core.auth import get_current_user
@@ -14,6 +16,7 @@ from app.core.responses import APIResponseHelper
 from app.api.v1.endpoints.products import CategoryResponse, ProductResponse
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 def format_menu_item(product, category_name=None):
     """Format product as menu item with required fields"""
@@ -56,21 +59,30 @@ async def get_menu_items(
     redis: RedisClient = Depends(get_redis)
 ):
     """Get menu items (products) for frontend compatibility"""
+    start_time = time.time()
     
     # Use user's restaurant if not specified
     if not restaurant_id:
         restaurant_id = str(current_user.restaurant_id)
     
+    logger.info(f"Menu items request started - Restaurant: {restaurant_id}, Category: {category}")
+    
     # Check cache first
     cache_key = f"menu_items:{restaurant_id}:{category or 'all'}"
     cached_items = await redis.get(cache_key)
     if cached_items:
+        cache_time = time.time() - start_time
+        logger.info(f"Menu items returned from cache in {cache_time:.3f}s")
         return APIResponseHelper.success(data=cached_items)
     
     # Build query
     query = db.query(Product).filter(
         and_(Product.restaurant_id == restaurant_id, Product.is_active == True)
     )
+    
+    # Optimize category handling
+    categories_dict = {}
+    category_filter_applied = False
     
     # Filter by category if specified
     if category and category != 'All':
@@ -79,15 +91,19 @@ async def get_menu_items(
         ).first()
         if category_obj:
             query = query.filter(Product.category_id == category_obj.id)
+            # Only fetch the specific category for optimization
+            categories_dict = {category_obj.id: category_obj.name}
+            category_filter_applied = True
     
     # Join with categories to avoid N+1 queries
     products = query.join(Category, Product.category_id == Category.id, isouter=True).order_by(Product.name).all()
     
-    # Get all categories for this restaurant in one query (for lookup)
-    categories_dict = {
-        cat.id: cat.name 
-        for cat in db.query(Category).filter(Category.restaurant_id == restaurant_id).all()
-    }
+    # Only fetch all categories if we haven't filtered by a specific one
+    if not category_filter_applied:
+        categories_dict = {
+            cat.id: cat.name 
+            for cat in db.query(Category).filter(Category.restaurant_id == restaurant_id).all()
+        }
     
     # Transform to match frontend expectations
     menu_items = []
@@ -99,13 +115,23 @@ async def get_menu_items(
     # Cache for 5 minutes
     await redis.set(cache_key, menu_items, expire=300)
     
+    # Log execution time and performance warnings
+    execution_time = time.time() - start_time
+    logger.info(f"Menu items request completed in {execution_time:.3f}s - Items: {len(menu_items)}")
+    
+    if execution_time > 5:
+        logger.warning(f"SLOW QUERY WARNING: Menu items took {execution_time:.3f}s for restaurant {restaurant_id} with {len(menu_items)} items")
+    elif execution_time > 2:
+        logger.warning(f"Performance Alert: Menu query took {execution_time:.3f}s - consider optimization")
+    
     return APIResponseHelper.success(
         data=menu_items,
         message=f"Retrieved {len(menu_items)} menu items",
         meta={
             "restaurant_id": restaurant_id,
             "category_filter": category,
-            "total_count": len(menu_items)
+            "total_count": len(menu_items),
+            "execution_time_ms": int(execution_time * 1000)
         }
     )
 
