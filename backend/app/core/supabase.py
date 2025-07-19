@@ -24,5 +24,14 @@ try:
     supabase_admin = get_supabase_client()
 except ValueError as e:
     # During development or if Supabase is not configured yet
-    print(f"Warning: Supabase client not initialized: {e}")
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.warning(f"Supabase client not initialized: {e}")
+    # Don't print to stdout as it might interfere with app startup
+    supabase_admin = None
+except Exception as e:
+    # Catch any other initialization errors
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.error(f"Unexpected error initializing Supabase client: {e}")
     supabase_admin = None

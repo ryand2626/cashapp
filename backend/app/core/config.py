@@ -4,8 +4,8 @@ Configuration settings for Fynlo POS Backend
 
 import os
 from pydantic_settings import BaseSettings
-from pydantic import field_validator
-from typing import Optional, List, Any
+from pydantic import field_validator, Field
+from typing import Optional, List, Any, Union
 from dotenv import load_dotenv
 
 # Determine the environment and load the appropriate .env file
@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "your-super-secret-key-change-in-production"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    CORS_ORIGINS: List[str] = ["http://localhost:3000"] # Default, will be overridden
+    CORS_ORIGINS: Union[List[str], str] = Field(default=["http://localhost:3000"], description="CORS allowed origins")
     
     # Supabase Authentication
     SUPABASE_URL: Optional[str] = None
@@ -133,28 +133,48 @@ class Settings(BaseSettings):
     
     @field_validator('CORS_ORIGINS', mode='before')
     @classmethod
-    def parse_cors_origins(cls, v: Any) -> List[str]:
-        """Parse CORS origins from comma-separated string or JSON array"""
+    def parse_cors_origins(cls, v: Any) -> Union[List[str], str]:
+        """Parse CORS origins from various formats"""
+        # If it's already a list, return it
         if isinstance(v, list):
-            # Ensure all elements are strings
-            return [str(item) for item in v if item]
-        if isinstance(v, str):
-            # Try to parse as JSON first
+            return [str(item).strip() for item in v if item]
+        
+        # If it's not a string, convert it
+        if not isinstance(v, str):
+            return []
+        
+        # Handle empty string
+        v = v.strip()
+        if not v:
+            return []
+        
+        # Try to parse as JSON array first
+        if v.startswith('[') and v.endswith(']'):
             try:
                 import json
                 parsed = json.loads(v)
                 if isinstance(parsed, list):
-                    # Ensure all elements are strings
-                    return [str(item) for item in parsed if item]
+                    return [str(item).strip() for item in parsed if item]
             except:
+                # JSON parsing failed, continue with other methods
                 pass
-            # Fall back to comma-separated parsing
-            # Remove any brackets and quotes, then split by comma
-            v = v.strip().strip('[]').strip('"').strip("'")
-            origins = [origin.strip().strip('"').strip("'") for origin in v.split(',')]
-            return [origin for origin in origins if origin]  # Remove empty strings
-        # For any other type (None, int, etc.), return empty list
-        return []
+        
+        # Handle quoted strings (common in environment variables)
+        if (v.startswith('"') and v.endswith('"')) or (v.startswith("'") and v.endswith("'")):
+            v = v[1:-1]
+        
+        # Handle single URL
+        if v.startswith('http://') or v.startswith('https://'):
+            # Check if it's a comma-separated list
+            if ',' in v:
+                origins = [origin.strip().strip('"').strip("'") for origin in v.split(',')]
+                return [origin for origin in origins if origin]
+            else:
+                return [v]
+        
+        # Fall back to comma-separated parsing
+        origins = [origin.strip().strip('"').strip("'") for origin in v.split(',')]
+        return [origin for origin in origins if origin]
     
     class Config:
         case_sensitive = True
