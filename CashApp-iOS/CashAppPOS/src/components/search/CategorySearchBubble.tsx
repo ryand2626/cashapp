@@ -95,7 +95,7 @@ const CategorySearchBubble: React.FC<Props> = ({ onSearchChange, onFocus, style 
   );
 };
 
-const createStyles = (theme: unknown) =>
+const createStyles = (theme: any) =>
   StyleSheet.create({
     bubble: {
       flexDirection: 'row',

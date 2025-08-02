@@ -2,8 +2,6 @@
 Integration tests for cached endpoints
 """
 
-
-"""
 import pytest
 from unittest.mock import MagicMock, AsyncMock, patch
 from fastapi.testclient import TestClient

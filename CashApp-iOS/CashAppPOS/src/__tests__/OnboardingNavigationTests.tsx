@@ -203,8 +203,8 @@ describe('Onboarding Navigation Tests', () => {
 
   describe('RestaurantProfileScreen', () => {
     it('should load restaurant data from config', async () => {
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-      const RestaurantProfileScreen = require('../screens/settings/RestaurantProfileScreen').default;
+      const RestaurantProfileScreen =
+        require('../screens/settings/RestaurantProfileScreen').default;
 
       // Mock existing restaurant data
       (AsyncStorage.getItem as jest.Mock).mockResolvedValue(
@@ -227,8 +227,8 @@ describe('Onboarding Navigation Tests', () => {
     });
 
     it('should save changes when Save button is pressed', async () => {
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-      const RestaurantProfileScreen = require('../screens/settings/RestaurantProfileScreen').default;
+      const RestaurantProfileScreen =
+        require('../screens/settings/RestaurantProfileScreen').default;
 
       const { getByText, getByDisplayValue } = render(<RestaurantProfileScreen />);
 

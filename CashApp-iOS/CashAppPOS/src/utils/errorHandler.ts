@@ -101,7 +101,7 @@ class ErrorHandler {
   /**
    * Handle network errors with retry logic
    */
-async handleNetworkError(error: Error, requestConfig?: unknown, context?: string): Promise<void> {
+  async handleNetworkError(error: Error, requestConfig?: unknown, context?: string): Promise<void> {
     const errorInfo = this.createErrorInfo(
       error,
       ErrorType.NETWORK,
@@ -141,7 +141,7 @@ async handleNetworkError(error: Error, requestConfig?: unknown, context?: string
   /**
    * Handle payment errors
    */
-async handlePaymentError(error: Error, paymentData?: unknown, context?: string): Promise<void> {
+  async handlePaymentError(error: Error, paymentData?: unknown, context?: string): Promise<void> {
     // Payment errors are always high severity
     await this.handleError(error, ErrorType.PAYMENT, ErrorSeverity.HIGH, context, {
       paymentData: this.sanitizePaymentData(paymentData),

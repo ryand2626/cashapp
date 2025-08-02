@@ -3,8 +3,6 @@
 Simple test server to diagnose network connectivity issues
 """
 
-
-"""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn

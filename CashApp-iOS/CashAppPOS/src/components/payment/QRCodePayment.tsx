@@ -5,9 +5,9 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } fr
 import QRCode from 'react-native-qrcode-svg';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import { logger } from '../../utils/logger';
-import PaymentService from '../../services/PaymentService';
 import { Colors } from '../../constants/Colors';
+import PaymentService from '../../services/PaymentService';
+import { logger } from '../../utils/logger';
 
 import QRPaymentErrorBoundary from './QRPaymentErrorBoundary';
 

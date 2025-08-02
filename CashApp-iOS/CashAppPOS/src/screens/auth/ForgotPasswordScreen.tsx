@@ -55,7 +55,7 @@ const ForgotPasswordScreen: React.FC = () => {
           },
         ]
       );
-    } catch (_error) {
+    } catch (error) {
       Alert.alert('Error', 'Failed to send reset link. Please try again.');
     } finally {
       setIsLoading(false);
@@ -179,6 +179,15 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+  },
+  inputIcon: {
+    marginRight: 12,
+  },
+  textInput: {
+    flex: 1,
+    fontSize: 16,
+    color: Colors.text,
+    paddingVertical: 16,
   },
   resetButton: {
     backgroundColor: Colors.secondary,

@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { logger } from '../utils/logger';
+
 /**
  * Clear all authentication-related storage
  * Use this to fix corrupted auth state

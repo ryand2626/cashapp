@@ -9,6 +9,7 @@ import io
 import base64
 from datetime import datetime, timedelta
 from typing import Optional, Tuple
+from fastapi import status
 
 from app.core.redis_client import RedisClient
 from app.models import User
@@ -81,7 +82,7 @@ class TwoFactorAuth:
         # Only platform owners require 2FA
         if not TenantSecurity.is_platform_owner(user):
             raise AuthenticationException(
-                message="2FA is only required for platform owners",
+                detail="2FA is only required for platform owners",
                 error_code="ACCESS_DENIED"
             )
         
@@ -118,7 +119,7 @@ class TwoFactorAuth:
         """
         if not self.redis:
             raise FynloException(
-                message="2FA service unavailable", 
+                detail="2FA service unavailable", 
                 status_code=503
             )
         
@@ -126,7 +127,7 @@ class TwoFactorAuth:
         setup_data = await self.redis.get(setup_key)
         if not setup_data:
             raise ValidationException(
-                message="2FA setup expired or invalid"
+                detail="2FA setup expired or invalid"
             )
         
         # Verify token
@@ -218,7 +219,7 @@ class TwoFactorAuth:
         valid, _ = await self.verify_2fa(user, current_token)
         if not valid:
             raise AuthenticationException(
-                message="Invalid 2FA token"
+                detail="Invalid 2FA token"
             )
         
         if self.redis:
@@ -239,16 +240,17 @@ class TwoFactorAuth:
         valid, _ = await self.verify_2fa(user, current_token)
         if not valid:
             raise AuthenticationException(
-                message="Invalid 2FA token"
+                detail="Invalid 2FA token"
             )
         
         if not self.redis:
             raise FynloException(
-                message="2FA service unavailable", 
+                detail="2FA service unavailable", 
                 status_code=503
             )
         
-        # Generate new codes        new_codes = self.generate_backup_codes()
+        # Generate new codes
+        new_codes = self.generate_backup_codes()
         
         # Update stored data
         user_2fa_key = f"2fa:user:{user.id}"

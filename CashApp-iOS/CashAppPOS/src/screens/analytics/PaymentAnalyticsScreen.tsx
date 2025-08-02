@@ -14,6 +14,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { LineChart, _BarChart, PieChart } from 'react-native-chart-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
 import { logger } from '../../utils/logger';
 
 const { width: screenWidth } = Dimensions.get('window');

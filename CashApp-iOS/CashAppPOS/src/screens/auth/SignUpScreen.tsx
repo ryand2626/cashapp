@@ -154,7 +154,7 @@ const SignUpScreen: React.FC<SignUpScreenProps> = ({ onSwitchToSignIn }) => {
           [{ text: 'OK' }]
         );
       }
-} catch (_error) {
+    } catch (_error) {
       Alert.alert('Error', 'An unexpected error occurred during registration. Please try again.', [
         { text: 'OK' },
       ]);

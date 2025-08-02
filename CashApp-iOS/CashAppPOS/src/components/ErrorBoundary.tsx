@@ -8,9 +8,9 @@ import type { ErrorInfo, ReactNode } from 'react';
 // TODO: Unused import - import React, { Component } from 'react';
 
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
-import { logger } from '../utils/logger';
 
 import { errorHandler } from '../services/errorHandler';
+import { logger } from '../utils/logger';
 
 interface Props {
   children: ReactNode;

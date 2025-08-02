@@ -45,8 +45,8 @@ OWASP_SQL_INJECTION_PAYLOADS = [
     "1' AND 1=2--",
     
     # Stacked queries
-    "1'; INSERT INTO users (username, password) VALUES ('hacker', 'dynamicpass')--",
-    "1'; UPDATE users SET password='dynamichacked' WHERE username='admin'--",
+    "1'; INSERT INTO users (username, password) VALUES ('hacker', 'password')--",
+    "1'; UPDATE users SET password='hacked' WHERE username='admin'--",
     "1'; DELETE FROM products WHERE 1=1--",
     
     # Out-of-band attacks

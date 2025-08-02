@@ -3,8 +3,6 @@ Test Platform Owner Access for Ryan and Arnaud
 Ensures platform owners maintain full access while others are restricted
 """
 
-
-"""
 import pytest
 from unittest.mock import MagicMock
 from app.core.tenant_security import TenantSecurity

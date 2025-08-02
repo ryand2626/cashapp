@@ -3,8 +3,6 @@ API-level Multi-tenant Isolation Tests
 Tests actual API endpoints for cross-tenant access vulnerabilities
 """
 
-
-"""
 import pytest
 import json
 from datetime import datetime
@@ -33,14 +31,12 @@ class TestAPIMultiTenantIsolation:
     @pytest.fixture
     def auth_headers_restaurant_a(self):
         """Auth headers for Restaurant A user"""
-        import uuid
-        return {"Authorization": f"Bearer test_token_restaurant_a_{uuid.uuid4().hex[:8]}"}
+        return {"Authorization": "Bearer mock_token_restaurant_a"}
     
     @pytest.fixture
     def auth_headers_restaurant_b(self):
         """Auth headers for Restaurant B user"""
-        import uuid
-        return {"Authorization": f"Bearer test_token_restaurant_b_{uuid.uuid4().hex[:8]}"}
+        return {"Authorization": "Bearer mock_token_restaurant_b"}
     
     @pytest.fixture
     def setup_test_data(self, mock_db_session):

@@ -23,7 +23,7 @@ export interface SyncError {
   entityType: 'customer';
   operation: 'create' | 'update' | 'delete';
   error: string;
-  data?: unknown;
+  data?: any;
 }
 
 export interface POSCustomer {
@@ -203,7 +203,7 @@ export class XeroCustomerSyncService {
    * Sync customers from Xero (Xero -> POS)
    */
   public async syncCustomersFromXero(
-    _options: CustomerSyncOptions = { direction: 'from_xero' }
+    options: CustomerSyncOptions = { direction: 'from_xero' }
   ): Promise<{ result: SyncResult; customers: POSCustomer[] }> {
     const startTime = Date.now();
     const result: SyncResult = {
@@ -295,10 +295,7 @@ export class XeroCustomerSyncService {
    */
   public async syncCustomersBidirectional(
     posCustomers: POSCustomer[],
-    _options: CustomerSyncOptions = {
-      direction: 'bidirectional',
-      conflictResolution: 'latest_wins',
-    }
+    options: CustomerSyncOptions = { direction: 'bidirectional', conflictResolution: 'latest_wins' }
   ): Promise<{ result: SyncResult; mergedCustomers: POSCustomer[] }> {
     const startTime = Date.now();
 

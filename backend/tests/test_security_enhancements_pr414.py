@@ -259,7 +259,7 @@ class TestWebhookSecurity:
     
     def test_webhook_signature_verification(self):
         """Test webhook signatures are verified correctly."""
-        secret = os.environ.get("TEST_WEBHOOK_SECRET", "dynamic_webhook_secret_123")
+        secret = "webhook_secret_123"
         payload = b'{"event": "deployment.updated", "id": 123}'
         
         # Generate valid signature
@@ -287,7 +287,7 @@ class TestWebhookSecurity:
     
     def test_webhook_timestamp_validation(self):
         """Test webhook timestamp prevents replay attacks."""
-        secret = os.environ.get("TEST_WEBHOOK_SECRET_V2", "dynamic_webhook_secret")
+        secret = "webhook_secret"
         payload = b'{"data": "test"}'
         
         # Old timestamp (5 minutes ago)

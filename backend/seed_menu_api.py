@@ -16,8 +16,6 @@ Environment Variables:
     AUTH_PASSWORD - User password for authentication (required)
 """
 
-
-"""
 import requests
 import json
 import sys

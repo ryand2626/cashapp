@@ -1,6 +1,6 @@
 /**
  * Test API connectivity and endpoints
- *
+ * 
  * IMPORTANT: Mock authentication endpoint has been removed for security.
  * See BREAKING_CHANGES.md for how to update authentication tests.
  */
@@ -19,13 +19,13 @@ const endpoints = [
 
 async function testAPIConnectivity() {
   console.log('🔌 Testing API Connectivity\n');
-
+  
   console.log(`Testing backend at: ${API_BASE_URL}\n`);
-
+  
   for (const endpoint of endpoints) {
     try {
       console.log(`Testing ${endpoint.method} ${endpoint.path}...`);
-
+      
       const response = await fetch(`${API_BASE_URL}${endpoint.path}`, {
         method: endpoint.method,
         headers: {
@@ -34,13 +34,14 @@ async function testAPIConnectivity() {
         // Add timeout
         signal: AbortSignal.timeout(5000),
       });
-
+      
       console.log(`  ✅ ${response.status} ${response.statusText}`);
-
+      
       if (endpoint.path === '/health' && response.ok) {
         const data = await response.json();
         console.log(`     Health data:`, data);
       }
+      
     } catch (error) {
       if (error.name === 'TimeoutError') {
         console.log(`  ⏰ Timeout - endpoint may be slow`);
@@ -50,16 +51,16 @@ async function testAPIConnectivity() {
         console.log(`  ❌ Error: ${error.message}`);
       }
     }
-
+    
     console.log(''); // blank line
   }
-
+  
   console.log('📋 API Test Summary:');
-  console.log("• If you see connection refused errors, that's expected");
+  console.log('• If you see connection refused errors, that\'s expected');
   console.log('• This confirms our API client is configured correctly');
   console.log('• When backend is running, these endpoints will work');
   console.log('• The DataService will automatically use real API when available');
-
+  
   console.log('\n🎯 Next Steps:');
   console.log('1. Start the backend server: cd backend && uvicorn app.main:app --reload');
   console.log('2. Run this test again to see successful connections');
@@ -70,14 +71,14 @@ async function testAPIConnectivity() {
 // Test our DatabaseService configuration
 async function testDatabaseServiceConfig() {
   console.log('\n📡 Testing DatabaseService Configuration\n');
-
+  
   // Simulate our DatabaseService API call structure
   const testAPICall = async (endpoint, options = {}) => {
     const url = `${API_BASE_URL}${endpoint}`;
-
+    
     const headers = {
       'Content-Type': 'application/json',
-      Accept: 'application/json',
+      'Accept': 'application/json',
       ...options.headers,
     };
 
@@ -101,7 +102,7 @@ async function testDatabaseServiceConfig() {
       };
     }
   };
-
+  
   // Test the main endpoints our DatabaseService uses
   const tests = [
     { name: 'Health Check', endpoint: '/health', method: 'GET' },
@@ -111,22 +112,22 @@ async function testDatabaseServiceConfig() {
     // Auth API removed - use Supabase auth instead (see BREAKING_CHANGES.md)
     // To test auth: Use Supabase SDK with test credentials from environment variables
   ];
-
+  
   for (const test of tests) {
     console.log(`Testing ${test.name}...`);
-
+    
     const result = await testAPICall(test.endpoint, {
       method: test.method,
       ...(test.body && { body: test.body }),
     });
-
+    
     if (result.success) {
       console.log(`  ✅ ${test.name}: Connected (${result.status})`);
     } else {
       console.log(`  🔴 ${test.name}: ${result.error || 'Failed'}`);
     }
   }
-
+  
   console.log('\n✅ DatabaseService configuration is correct');
   console.log('✅ All API endpoints are properly configured');
   console.log('✅ Error handling will work as expected');
@@ -136,7 +137,7 @@ async function testDatabaseServiceConfig() {
 async function runAllConnectivityTests() {
   await testAPIConnectivity();
   await testDatabaseServiceConfig();
-
+  
   console.log('\n🎉 Connectivity Testing Complete!');
   console.log('\nThe dual data system is working correctly:');
   console.log('• Mock data provides beautiful showcase experience');

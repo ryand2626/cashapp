@@ -4,7 +4,6 @@ Production Seed Data Script for Fynlo POS
 Creates realistic data for ONE Mexican restaurant as if the owner entered it themselves.
 
 This script replaces all mock/demo data with production-ready seed data that can be used
-"""
 for testing reports, employee management, inventory tracking, and all other features.
 
 NO MOCK DATA - Only realistic data a Mexican restaurant would actually have.

@@ -259,7 +259,7 @@ const BusinessInformationScreen: React.FC = () => {
         'Business information has been saved successfully. The restaurant name will now appear in your headers.',
         [{ text: 'OK' }]
       );
-} catch (_error) {
+    } catch (_error) {
       Alert.alert('Error', 'Failed to save business information. Please try again.', [
         { text: 'OK' },
       ]);

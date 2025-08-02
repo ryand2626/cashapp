@@ -44,7 +44,7 @@ const ReceiptCustomizationScreen: React.FC = () => {
   const [hasChanges, setHasChanges] = useState(false);
   const [logoUri, setLogoUri] = useState<string | null>(receiptSettings.logoUri || null);
 
-const handleFieldChange = (field: string, value: unknown) => {
+  const handleFieldChange = (field: string, value: unknown) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setHasChanges(true);
   };
@@ -56,7 +56,7 @@ const handleFieldChange = (field: string, value: unknown) => {
       Alert.alert('Success', 'Receipt customization has been saved successfully.', [
         { text: 'OK' },
       ]);
-} catch (_error) {
+    } catch (_error) {
       Alert.alert('Error', 'Failed to save receipt customization. Please try again.', [
         { text: 'OK' },
       ]);

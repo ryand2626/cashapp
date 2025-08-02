@@ -4,7 +4,7 @@
  */
 
 import DatabaseService from '../../services/DatabaseService';
-import { _mockApiResponses, mockMenuItems, _mockUsers } from '../fixtures/mockData';
+import { mockApiResponses, mockMenuItems, mockUsers } from '../fixtures/mockData';
 
 // Mock fetch for controlled testing
 const mockFetch = jest.fn();
@@ -447,7 +447,7 @@ describe('API Integration Tests', () => {
 
   describe('Performance and Caching', () => {
     it('should handle multiple concurrent requests', async () => {
-      const requests = Array.from({ length: 10 }, (_, _i) => {
+      const requests = Array.from({ length: 10 }, (_, i) => {
         mockFetch.mockResolvedValueOnce({
           ok: true,
           json: () =>

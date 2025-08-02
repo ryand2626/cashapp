@@ -9,8 +9,6 @@ Run this script after running the database migration:
 python backend/scripts/setup_subscription_plans.py
 """
 
-
-"""
 import sys
 import os
 from datetime import datetime

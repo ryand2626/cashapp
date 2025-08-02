@@ -376,7 +376,7 @@ describe('Comprehensive App Test Suite', () => {
     it('should render large lists efficiently', async () => {
       const startTime = Date.now();
 
-const { _getByTestId } = render(
+      const { _getByTestId } = render(
         <NavigationContainer>
           <InventoryScreen />
         </NavigationContainer>

@@ -58,7 +58,7 @@ export interface XeroSyncError {
   operation: 'create' | 'update' | 'delete' | 'sync';
   errorCode?: string;
   error: string;
-  data?: unknown;
+  data?: any;
   timestamp: Date;
   retryable: boolean;
 }
@@ -68,7 +68,7 @@ export interface XeroSyncWarning {
   entityId: string;
   entityType: XeroEntityType;
   message: string;
-  data?: unknown;
+  data?: any;
   timestamp: Date;
 }
 
@@ -82,7 +82,7 @@ export interface BaseEntityMapping {
   syncDirection: XeroSyncDirection;
   syncStatus: XeroSyncStatus;
   conflictResolution?: XeroConflictResolution;
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, any>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -144,7 +144,7 @@ export interface XeroSyncFilters {
   };
   status?: string[];
   categories?: string[];
-  customFilters?: Record<string, unknown>;
+  customFilters?: Record<string, any>;
 }
 
 // Sync Session Models
@@ -160,7 +160,7 @@ export interface XeroSyncSession {
   endTime?: Date;
   duration?: number;
   triggeredBy: string; // User ID or 'system'
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, any>;
 }
 
 // Audit and Logging Models
@@ -175,13 +175,13 @@ export interface XeroSyncAuditLog {
   errorDetails?: XeroSyncError;
   timestamp: Date;
   duration?: number;
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, any>;
 }
 
 export interface XeroSyncChange {
   field: string;
-  oldValue: unknown;
-  newValue: unknown;
+  oldValue: any;
+  newValue: any;
   source: 'pos' | 'xero';
 }
 
@@ -227,7 +227,7 @@ export interface XeroWebhookEvent {
   error?: string;
   retryCount: number;
   maxRetries: number;
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, any>;
 }
 
 // Data Validation Models
@@ -236,7 +236,7 @@ export interface XeroValidationRule {
   entityType: XeroEntityType;
   field: string;
   rule: 'required' | 'format' | 'range' | 'custom';
-  parameters?: unknown;
+  parameters?: any;
   errorMessage: string;
   isActive: boolean;
 }
@@ -251,20 +251,20 @@ export interface XeroValidationError {
   field: string;
   rule: string;
   message: string;
-  value?: unknown;
+  value?: any;
 }
 
 export interface XeroValidationWarning {
   field: string;
   message: string;
-  value?: unknown;
+  value?: any;
 }
 
 // Cache Models
 export interface XeroCacheEntry {
   key: string;
   entityType: XeroEntityType;
-  data: unknown;
+  data: any;
   timestamp: Date;
   expiresAt: Date;
   size: number; // In bytes

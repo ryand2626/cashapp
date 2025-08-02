@@ -332,7 +332,7 @@ const PaymentScreen: React.FC = () => {
   // SumUp Payment Function - React Hook Based Integration
   const processSumUpPayment = async (
     request: PaymentRequest,
-_paymentMethod: string = 'tapToPay'
+    _paymentMethod: string = 'tapToPay'
   ) => {
     try {
       logger.info('🏦 Starting SumUp payment flow with React hooks...');

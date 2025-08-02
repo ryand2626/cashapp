@@ -366,7 +366,7 @@ describe('DatabaseService', () => {
   describe('Offline Data Sync', () => {
     it('should sync offline data when available', async () => {
       // Mock AsyncStorage with offline orders
-import mockAsyncStorage from '@react-native-async-storage/async-storage';
+      import mockAsyncStorage from '@react-native-async-storage/async-storage';
       mockAsyncStorage.getItem.mockResolvedValue(
         JSON.stringify([
           { items: [{ product_id: 1, quantity: 1 }] },

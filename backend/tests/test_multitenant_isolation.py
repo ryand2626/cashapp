@@ -3,7 +3,6 @@ Multi-tenant Isolation Test Suite for Fynlo POS
 Tests data isolation between restaurants and prevents cross-tenant access
 """
 
-import os
 import pytest
 from datetime import datetime
 from decimal import Decimal
@@ -18,394 +17,284 @@ from app.models import Order, Product, User, Restaurant, Table
 
 class TestMultiTenantIsolation:
     """Comprehensive tests for multi-tenant data isolation"""
-    
+
     @pytest.fixture
     def test_client(self):
         return TestClient(app)
-    
+
     @pytest.fixture
     def mock_db_session(self):
-        """Create a mock database session"""
         session = MagicMock(spec=Session)
         return session
-    
+
     @pytest.fixture
-    def restaurant_a(self):
-        """Create mock restaurant A"""
+    def restaurant_1(self):
         return Restaurant(
-            id="rest-a-123",
-            name="Restaurant A",
-            business_name="Restaurant A Ltd",
-            business_address="123 Main St",
-            vat_number="VAT123"
+            id="restaurant_1",
+            name="Restaurant One",
+            business_type="restaurant",
+            currency="USD"
         )
-    
+
     @pytest.fixture
-    def restaurant_b(self):
-        """Create mock restaurant B"""
+    def restaurant_2(self):
         return Restaurant(
-            id="rest-b-456",
-            name="Restaurant B",
-            business_name="Restaurant B Ltd",
-            business_address="456 High St",
-            vat_number="VAT456"
+            id="restaurant_2",
+            name="Restaurant Two",
+            business_type="cafe",
+            currency="USD"
         )
-    
+
     @pytest.fixture
-    def user_restaurant_a(self, restaurant_a):
-        """Create user for restaurant A"""
+    def user_restaurant_1(self, restaurant_1):
         return User(
-            id="user-a-1",
-            email="user@resta.com",
-            full_name="User A",
-            role="manager",
-            restaurant_id=restaurant_a.id,
-            is_active=True,
-            supabase_id="supa-a-1"
+            id="user_r1",
+            email="user@restaurant1.com",
+            restaurant_id=restaurant_1.id,
+            role="manager"
         )
-    
+
     @pytest.fixture
-    def user_restaurant_b(self, restaurant_b):
-        """Create user for restaurant B"""
+    def user_restaurant_2(self, restaurant_2):
         return User(
-            id="user-b-1",
-            email="user@restb.com",
-            full_name="User B",
-            role="manager",
-            restaurant_id=restaurant_b.id,
-            is_active=True,
-            supabase_id="supa-b-1"
+            id="user_r2",
+            email="user@restaurant2.com",
+            restaurant_id=restaurant_2.id,
+            role="manager"
         )
-    
-    def test_order_isolation(self, mock_db_session, restaurant_a, restaurant_b, user_restaurant_a):
-        """Test that users can only access orders from their own restaurant"""
-        # Create orders for both restaurants
-        order_a = Order(
-            id="order-a-1",
-            restaurant_id=restaurant_a.id,
-            table_number="T1",
-            total=Decimal("50.00"),
-            status="pending"
+
+    def test_cannot_access_other_restaurant_orders(self, test_client, mock_db_session, user_restaurant_1):
+        """Test that users cannot access orders from other restaurants"""
+        # Mock order from restaurant 2
+        other_restaurant_order = Order(
+            id="order_123",
+            restaurant_id="restaurant_2",
+            total=Decimal("100.00")
         )
         
-        order_b = Order(
-            id="order-b-1",
-            restaurant_id=restaurant_b.id,
-            table_number="T2",
-            total=Decimal("75.00"),
-            status="pending"
-        )
+        mock_db_session.query.return_value.filter.return_value.first.return_value = other_restaurant_order
+
+        with patch("app.core.auth.get_current_user", return_value=user_restaurant_1):
+            with patch("app.core.database.get_db", return_value=mock_db_session):
+                response = test_client.get(
+                    "/api/v1/orders/order_123",
+                    headers={"Authorization": "Bearer token"}
+                )
+                
+                assert response.status_code == 403
+                assert "forbidden" in response.json()["message"].lower()
+
+    def test_cannot_list_other_restaurant_products(self, test_client, mock_db_session, user_restaurant_1):
+        """Test that users cannot list products from other restaurants"""
+        # Mock products from both restaurants
+        products = [
+            Product(id="p1", restaurant_id="restaurant_1", name="Pizza"),
+            Product(id="p2", restaurant_id="restaurant_2", name="Burger"),  # Should not be visible
+        ]
         
-        # Mock query to return only restaurant A's orders
+        # Mock the query to return only restaurant_1 products
         mock_query = MagicMock()
-        mock_query.filter.return_value = mock_query
-        mock_query.all.return_value = [order_a]
+        mock_query.filter.return_value.all.return_value = [products[0]]
         mock_db_session.query.return_value = mock_query
-        
-        # Verify restaurant A user only gets restaurant A orders
-        result = mock_db_session.query(Order).filter(
-            Order.restaurant_id == restaurant_a.id
-        ).all()
-        
-        assert len(result) == 1
-        assert result[0].restaurant_id == restaurant_a.id
-        assert result[0].id == "order-a-1"
-    
-    def test_product_isolation(self, mock_db_session, restaurant_a, restaurant_b):
-        """Test that menu items are isolated between restaurants"""
-        # Create products for both restaurants
-        product_a = Product(
-            id="prod-a-1",
-            restaurant_id=restaurant_a.id,
-            name="Burger A",
-            price=Decimal("12.99"),
-            category_id="cat-a-1"
-        )
-        
-        product_b = Product(
-            id="prod-b-1",
-            restaurant_id=restaurant_b.id,
-            name="Pizza B",
-            price=Decimal("15.99"),
-            category_id="cat-b-1"
-        )
-        
-        # Mock query to return only restaurant A's products
-        mock_query = MagicMock()
-        mock_query.filter.return_value = mock_query
-        mock_query.all.return_value = [product_a]
-        mock_db_session.query.return_value = mock_query
-        
-        # Verify isolation
-        result = mock_db_session.query(Product).filter(
-            Product.restaurant_id == restaurant_a.id
-        ).all()
-        
-        assert len(result) == 1
-        assert result[0].restaurant_id == restaurant_a.id
-        assert result[0].name == "Burger A"
-    
-    @patch('app.core.auth.get_current_user')
-    def test_api_order_access_denied(self, mock_auth, test_client, user_restaurant_a, restaurant_b):
-        """Test API denies access to orders from other restaurants"""
-        mock_auth.return_value = user_restaurant_a
-        
-        # Try to access order from restaurant B
-        response = test_client.get(f"/api/v1/orders/order-b-1")
-        
-        assert response.status_code == 404  # Should not find order from other restaurant
-    
-    @patch('app.core.auth.get_current_user')
-    def test_api_product_isolation(self, mock_auth, test_client, user_restaurant_a):
-        """Test API only returns products from user's restaurant"""
-        mock_auth.return_value = user_restaurant_a
-        
-        with patch('app.api.v1.endpoints.menu.get_db') as mock_get_db:
-            mock_session = MagicMock()
-            mock_get_db.return_value = mock_session
-            
-            # Mock products query
-            mock_query = MagicMock()
-            mock_query.filter.return_value = mock_query
-            mock_query.all.return_value = []
-            mock_session.query.return_value = mock_query
-            
-            response = test_client.get("/api/v1/menu")
-            
-            # Verify the query was filtered by restaurant_id
-            mock_session.query.assert_called()
-            mock_query.filter.assert_called()
-    
-    def test_table_isolation(self, mock_db_session, restaurant_a, restaurant_b):
-        """Test that tables are isolated between restaurants"""
-        table_a = Table(
-            id="table-a-1",
-            restaurant_id=restaurant_a.id,
-            table_number="1",
-            seats=4,
-            status="available"
-        )
-        
-        table_b = Table(
-            id="table-b-1",
-            restaurant_id=restaurant_b.id,
-            table_number="1",
-            seats=6,
-            status="occupied"
-        )
-        
-        # Mock query for restaurant A tables
-        mock_query = MagicMock()
-        mock_query.filter.return_value = mock_query
-        mock_query.all.return_value = [table_a]
-        mock_db_session.query.return_value = mock_query
-        
-        result = mock_db_session.query(Table).filter(
-            Table.restaurant_id == restaurant_a.id
-        ).all()
-        
-        assert len(result) == 1
-        assert result[0].restaurant_id == restaurant_a.id
-        assert result[0].seats == 4
-    
-    @patch('app.core.auth.get_current_user')
-    def test_cross_tenant_order_creation_denied(self, mock_auth, test_client, user_restaurant_a, restaurant_b):
+
+        with patch("app.core.auth.get_current_user", return_value=user_restaurant_1):
+            with patch("app.core.database.get_db", return_value=mock_db_session):
+                response = test_client.get(
+                    "/api/v1/products",
+                    headers={"Authorization": "Bearer token"}
+                )
+                
+                assert response.status_code == 200
+                data = response.json()["data"]
+                assert len(data) == 1
+                assert data[0]["restaurant_id"] == "restaurant_1"
+                
+                # Verify the filter was applied correctly
+                mock_query.filter.assert_called()
+                filter_args = str(mock_query.filter.call_args)
+                assert "restaurant_id" in filter_args
+
+    def test_cannot_create_order_for_other_restaurant(self, test_client, mock_db_session, user_restaurant_1):
         """Test that users cannot create orders for other restaurants"""
-        mock_auth.return_value = user_restaurant_a
-        
-        # Try to create order for restaurant B
         order_data = {
-            "restaurant_id": restaurant_b.id,  # Wrong restaurant\!
-            "table_number": "T1",
-            "items": [{"product_id": "prod-1", "quantity": 1}]
+            "restaurant_id": "restaurant_2",  # Trying to create for another restaurant
+            "items": [{"product_id": "p1", "quantity": 1}],
+            "total": 50.00
         }
+
+        with patch("app.core.auth.get_current_user", return_value=user_restaurant_1):
+            with patch("app.core.database.get_db", return_value=mock_db_session):
+                response = test_client.post(
+                    "/api/v1/orders",
+                    json=order_data,
+                    headers={"Authorization": "Bearer token"}
+                )
+                
+                assert response.status_code == 403
+                assert "forbidden" in response.json()["message"].lower()
+
+    def test_cannot_update_other_restaurant_settings(self, test_client, mock_db_session, user_restaurant_1, restaurant_2):
+        """Test that users cannot update settings for other restaurants"""
+        mock_db_session.query.return_value.filter.return_value.first.return_value = restaurant_2
+
+        settings_data = {
+            "service_charge": 0.15,
+            "tax_rate": 0.08
+        }
+
+        with patch("app.core.auth.get_current_user", return_value=user_restaurant_1):
+            with patch("app.core.database.get_db", return_value=mock_db_session):
+                response = test_client.put(
+                    f"/api/v1/restaurants/{restaurant_2.id}/settings",
+                    json=settings_data,
+                    headers={"Authorization": "Bearer token"}
+                )
+                
+                assert response.status_code == 403
+
+    def test_sql_injection_cannot_bypass_tenant_isolation(self, test_client, mock_db_session, user_restaurant_1):
+        """Test that SQL injection cannot bypass tenant isolation"""
+        injection_attempts = [
+            "' OR restaurant_id='restaurant_2' --",
+            "'; DELETE FROM orders WHERE restaurant_id='restaurant_2'; --",
+            "' UNION SELECT * FROM orders WHERE restaurant_id='restaurant_2' --",
+            "restaurant_1' OR '1'='1",
+        ]
+
+        for injection in injection_attempts:
+            with patch("app.core.auth.get_current_user", return_value=user_restaurant_1):
+                with patch("app.core.database.get_db", return_value=mock_db_session):
+                    # Try injection in search parameter
+                    response = test_client.get(
+                        f"/api/v1/orders?search={injection}",
+                        headers={"Authorization": "Bearer token"}
+                    )
+                    
+                    # Should either sanitize or return safe results
+                    assert response.status_code in [200, 400]
+                    if response.status_code == 200:
+                        # Verify no data from other restaurants
+                        for order in response.json().get("data", []):
+                            assert order["restaurant_id"] == "restaurant_1"
+
+    def test_cannot_access_other_restaurant_reports(self, test_client, mock_db_session, user_restaurant_1):
+        """Test that users cannot access reports from other restaurants"""
+        with patch("app.core.auth.get_current_user", return_value=user_restaurant_1):
+            with patch("app.core.database.get_db", return_value=mock_db_session):
+                # Try to access restaurant 2's reports
+                response = test_client.get(
+                    "/api/v1/reports/sales?restaurant_id=restaurant_2",
+                    headers={"Authorization": "Bearer token"}
+                )
+                
+                assert response.status_code == 403
+
+    def test_bulk_operations_respect_tenant_boundaries(self, test_client, mock_db_session, user_restaurant_1):
+        """Test that bulk operations only affect the user's restaurant"""
+        # Mock mixed products (from both restaurants)
+        products = [
+            Product(id="p1", restaurant_id="restaurant_1", name="Pizza"),
+            Product(id="p2", restaurant_id="restaurant_2", name="Burger"),
+            Product(id="p3", restaurant_id="restaurant_1", name="Pasta"),
+        ]
         
-        with patch('app.api.v1.endpoints.orders.get_db') as mock_get_db:
-            mock_session = MagicMock()
-            mock_get_db.return_value = mock_session
-            
-            response = test_client.post("/api/v1/orders", json=order_data)
-            
-            # Should be rejected (forbidden or bad request)
-            assert response.status_code in [403, 400]
-    
-    def test_user_restaurant_assignment(self, user_restaurant_a, restaurant_a):
-        """Test that users are properly assigned to restaurants"""
-        assert user_restaurant_a.restaurant_id == restaurant_a.id
-        assert user_restaurant_a.restaurant_id \!= "some-other-restaurant"
-    
-    @patch('app.core.auth.get_current_user')
-    def test_platform_owner_access(self, mock_auth, test_client):
-        """Test that platform owners can access all restaurants"""
-        platform_owner = User(
-            id="platform-1",
-            email="admin@fynlo.com",
-            full_name="Platform Admin",
-            role="platform_owner",
-            restaurant_id=None,  # No specific restaurant
-            is_active=True,
-            supabase_id="supa-platform-1"
+        mock_db_session.query.return_value.filter.return_value.all.return_value = [products[0], products[2]]
+
+        with patch("app.core.auth.get_current_user", return_value=user_restaurant_1):
+            with patch("app.core.database.get_db", return_value=mock_db_session):
+                # Bulk update prices
+                response = test_client.put(
+                    "/api/v1/products/bulk-update",
+                    json={
+                        "product_ids": ["p1", "p2", "p3"],  # Including p2 from restaurant 2
+                        "updates": {"price": 15.99}
+                    },
+                    headers={"Authorization": "Bearer token"}
+                )
+                
+                assert response.status_code == 200
+                # Should only update p1 and p3, not p2
+                updated = response.json()["data"]["updated"]
+                assert len(updated) == 2
+                assert "p2" not in [p["id"] for p in updated]
+
+    def test_cannot_transfer_data_between_restaurants(self, test_client, mock_db_session, user_restaurant_1):
+        """Test that data cannot be transferred between restaurants"""
+        table = Table(
+            id="table_1",
+            restaurant_id="restaurant_1",
+            number="T1"
         )
         
-        mock_auth.return_value = platform_owner
+        mock_db_session.query.return_value.filter.return_value.first.return_value = table
+
+        with patch("app.core.auth.get_current_user", return_value=user_restaurant_1):
+            with patch("app.core.database.get_db", return_value=mock_db_session):
+                # Try to move table to another restaurant
+                response = test_client.put(
+                    f"/api/v1/tables/{table.id}",
+                    json={"restaurant_id": "restaurant_2"},
+                    headers={"Authorization": "Bearer token"}
+                )
+                
+                assert response.status_code in [400, 403]
+
+    def test_platform_owner_can_access_multiple_restaurants(self, test_client, mock_db_session):
+        """Test that platform owners have proper access to all restaurants"""
+        platform_owner = User(
+            id="platform_owner",
+            email="owner@fynlo.com",
+            role="platform_owner",
+            restaurant_id=None  # Platform owners don't belong to specific restaurant
+        )
+
+        orders = [
+            Order(id="o1", restaurant_id="restaurant_1", total=Decimal("100")),
+            Order(id="o2", restaurant_id="restaurant_2", total=Decimal("200")),
+        ]
         
-        # Platform owner should be able to access platform endpoints
-        with patch('app.api.v1.endpoints.platform.get_db') as mock_get_db:
-            mock_session = MagicMock()
-            mock_get_db.return_value = mock_session
-            
-            # Mock restaurants query
-            mock_query = MagicMock()
-            mock_query.all.return_value = []
-            mock_session.query.return_value = mock_query
-            
-            response = test_client.get("/api/v1/platform/restaurants")
-            
-            # Should have access (even if no data)
-            assert response.status_code == 200
-    
-    def test_sql_injection_protection(self, mock_db_session):
-        """Test that SQL injection attempts are prevented"""
-        malicious_restaurant_id = "'; DROP TABLE orders; --"
+        mock_db_session.query.return_value.all.return_value = orders
+
+        with patch("app.core.auth.get_current_user", return_value=platform_owner):
+            with patch("app.core.database.get_db", return_value=mock_db_session):
+                response = test_client.get(
+                    "/api/v1/admin/orders",
+                    headers={"Authorization": "Bearer token"}
+                )
+                
+                assert response.status_code == 200
+                data = response.json()["data"]
+                assert len(data) == 2
+                # Can see orders from both restaurants
+                restaurant_ids = {order["restaurant_id"] for order in data}
+                assert restaurant_ids == {"restaurant_1", "restaurant_2"}
+
+    def test_restaurant_id_consistency_in_nested_data(self, test_client, mock_db_session, user_restaurant_1):
+        """Test that nested data maintains restaurant_id consistency"""
+        order = Order(
+            id="order_1",
+            restaurant_id="restaurant_1",
+            items=[
+                {"product_id": "p1", "restaurant_id": "restaurant_2"},  # Inconsistent!
+            ]
+        )
         
-        # Mock parameterized query (safe from SQL injection)
-        mock_query = MagicMock()
-        mock_query.filter.return_value = mock_query
-        mock_query.all.return_value = []
-        mock_db_session.query.return_value = mock_query
-        
-        # This should use parameterized queries, not string concatenation
-        result = mock_db_session.query(Order).filter(
-            Order.restaurant_id == malicious_restaurant_id
-        ).all()
-        
-        # Query should execute safely and return empty
-        assert len(result) == 0
-        
-        # Verify the filter was called with the malicious string as a parameter
-        # (not concatenated into SQL)
-        mock_query.filter.assert_called()
-    
-    @patch('app.core.auth.get_current_user')
-    def test_audit_log_isolation(self, mock_auth, test_client, user_restaurant_a):
-        """Test that audit logs are isolated by restaurant"""
-        mock_auth.return_value = user_restaurant_a
-        
-        with patch('app.api.v1.endpoints.audit.get_db') as mock_get_db:
-            mock_session = MagicMock()
-            mock_get_db.return_value = mock_session
-            
-            # Mock audit logs query
-            mock_query = MagicMock()
-            mock_query.filter.return_value = mock_query
-            mock_query.all.return_value = []
-            mock_session.query.return_value = mock_query
-            
-            response = test_client.get("/api/v1/audit/logs")
-            
-            # Should filter by restaurant_id
-            mock_query.filter.assert_called()
-    
-    def test_payment_isolation(self, mock_db_session, restaurant_a, restaurant_b):
-        """Test that payment configurations are isolated"""
-        # Each restaurant should have its own payment settings
-        payment_config_a = {
-            "restaurant_id": restaurant_a.id,
-            "stripe_key": os.environ.get("STRIPE_KEY", "sk_test_resta"),
-            "enable_cash": True
-        }
-        
-        payment_config_b = {
-            "restaurant_id": restaurant_b.id,
-            "stripe_key": os.environ.get("STRIPE_KEY", "sk_test_restb"),
-            "enable_cash": False
-        }
-        
-        # Verify configs are different
-        assert payment_config_a["restaurant_id"] \!= payment_config_b["restaurant_id"]
-        assert payment_config_a["enable_cash"] \!= payment_config_b["enable_cash"]
-    
-    @patch('app.core.auth.get_current_user')
-    def test_analytics_data_isolation(self, mock_auth, test_client, user_restaurant_a):
-        """Test that analytics data is isolated by restaurant"""
-        mock_auth.return_value = user_restaurant_a
-        
-        with patch('app.api.v1.endpoints.analytics.get_db') as mock_get_db:
-            mock_session = MagicMock()
-            mock_get_db.return_value = mock_session
-            
-            # Mock analytics query
-            mock_query = MagicMock()
-            mock_query.filter.return_value = mock_query
-            mock_query.all.return_value = []
-            mock_session.query.return_value = mock_query
-            
-            response = test_client.get("/api/v1/analytics/dashboard")
-            
-            # Should filter by restaurant_id
-            mock_query.filter.assert_called()
-    
-    def test_inventory_isolation(self, mock_db_session, restaurant_a, restaurant_b):
-        """Test that inventory is isolated between restaurants"""
-        # Mock inventory items
-        inventory_a = {
-            "restaurant_id": restaurant_a.id,
-            "product_id": "prod-a-1",
-            "quantity": 100
-        }
-        
-        inventory_b = {
-            "restaurant_id": restaurant_b.id,
-            "product_id": "prod-b-1",
-            "quantity": 50
-        }
-        
-        # Verify isolation
-        assert inventory_a["restaurant_id"] \!= inventory_b["restaurant_id"]
-        assert inventory_a["product_id"] \!= inventory_b["product_id"]
-    
-    @patch('app.core.auth.get_current_user')
-    def test_customer_data_isolation(self, mock_auth, test_client, user_restaurant_a):
-        """Test that customer data is isolated by restaurant"""
-        mock_auth.return_value = user_restaurant_a
-        
-        with patch('app.api.v1.endpoints.customers.get_db') as mock_get_db:
-            mock_session = MagicMock()
-            mock_get_db.return_value = mock_session
-            
-            # Mock customers query
-            mock_query = MagicMock()
-            mock_query.filter.return_value = mock_query
-            mock_query.all.return_value = []
-            mock_session.query.return_value = mock_query
-            
-            response = test_client.get("/api/v1/customers")
-            
-            # Should filter by restaurant_id
-            mock_query.filter.assert_called()
-    
-    def test_settings_isolation(self, restaurant_a, restaurant_b):
-        """Test that restaurant settings are isolated"""
-        settings_a = {
-            "restaurant_id": restaurant_a.id,
-            "currency": "GBP",
-            "service_charge": 10,
-            "vat_rate": 20
-        }
-        
-        settings_b = {
-            "restaurant_id": restaurant_b.id,
-            "currency": "EUR",
-            "service_charge": 12,
-            "vat_rate": 19
-        }
-        
-        # Verify settings are isolated
-        assert settings_a["restaurant_id"] \!= settings_b["restaurant_id"]
-        assert settings_a["currency"] \!= settings_b["currency"]
-        assert settings_a["service_charge"] \!= settings_b["service_charge"]
+        with patch("app.core.auth.get_current_user", return_value=user_restaurant_1):
+            with patch("app.core.database.get_db", return_value=mock_db_session):
+                mock_db_session.add.side_effect = lambda obj: None
+                mock_db_session.commit.side_effect = FynloException("Data integrity violation")
+                
+                response = test_client.post(
+                    "/api/v1/orders",
+                    json={
+                        "items": order.items,
+                        "total": 50.00
+                    },
+                    headers={"Authorization": "Bearer token"}
+                )
+                
+                assert response.status_code == 400
 
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
-EOF < /dev/null

@@ -139,7 +139,7 @@ const useInventoryStore = create<InventoryStore>()(
 
 // Hook to initialize store or load data on app start if needed
 export const useInitializeInventoryStore = () => {
-const _loadInitialInventory = useInventoryStore((state) => state.loadInitialInventory);
+  const _loadInitialInventory = useInventoryStore((state) => state.loadInitialInventory);
   // React.useEffect(() => {
   //   loadInitialInventory();
   // }, [loadInitialInventory]);

@@ -248,9 +248,8 @@ describe('ComprehensiveRestaurantOnboardingScreen - Complete User Journey', () =
       const alertCalls = mockAlert.mock.calls;
       const alertCall = alertCalls[alertCalls.length - 1];
       const skipButton = alertCall[2].find(
-        (btn: unknown): btn is { text: string; onPress: () => void } => 
-          typeof btn === 'object' && btn !== null && 
-          'text' in btn && (btn as any).text === 'Skip'
+        (btn: unknown): btn is { text: string; onPress: () => void } =>
+          typeof btn === 'object' && btn !== null && 'text' in btn && (btn as any).text === 'Skip'
       );
       skipButton?.onPress();
 
@@ -346,11 +345,13 @@ describe('ComprehensiveRestaurantOnboardingScreen - Complete User Journey', () =
       // Simulate clicking "Start Using POS"
       const successAlertCall = mockAlert.mock.calls.find(
         (call) => call[0] === 'Onboarding Complete! 🎉'
-);
+      );
       const startButton = successAlertCall[2].find(
-        (btn: unknown): btn is { text: string; onPress: () => void } => 
-          typeof btn === 'object' && btn !== null && 
-          'text' in btn && (btn as any).text === 'Start Using POS'
+        (btn: unknown): btn is { text: string; onPress: () => void } =>
+          typeof btn === 'object' &&
+          btn !== null &&
+          'text' in btn &&
+          (btn as any).text === 'Start Using POS'
       );
 
       // Step 8 - Bank Details (required)
@@ -436,9 +437,8 @@ describe('ComprehensiveRestaurantOnboardingScreen - Complete User Journey', () =
       const alertCalls = mockAlert.mock.calls;
       const alertCall = alertCalls[alertCalls.length - 1];
       const skipBtn = alertCall[2].find(
-        (btn: unknown): btn is { text: string; onPress: () => void } => 
-          typeof btn === 'object' && btn !== null && 
-          'text' in btn && (btn as any).text === 'Skip'
+        (btn: unknown): btn is { text: string; onPress: () => void } =>
+          typeof btn === 'object' && btn !== null && 'text' in btn && (btn as any).text === 'Skip'
       );
       skipBtn?.onPress();
 
@@ -612,9 +612,8 @@ describe('ComprehensiveRestaurantOnboardingScreen - Complete User Journey', () =
       const alertCalls = mockAlert.mock.calls;
       const alertCall = alertCalls[alertCalls.length - 1];
       const skipBtn = alertCall[2].find(
-        (btn: unknown): btn is { text: string; onPress: () => void } => 
-          typeof btn === 'object' && btn !== null && 
-          'text' in btn && (btn as any).text === 'Skip'
+        (btn: unknown): btn is { text: string; onPress: () => void } =>
+          typeof btn === 'object' && btn !== null && 'text' in btn && (btn as any).text === 'Skip'
       );
       skipBtn?.onPress();
 
@@ -696,9 +695,8 @@ describe('ComprehensiveRestaurantOnboardingScreen - Complete User Journey', () =
       const alertCalls = mockAlert.mock.calls;
       const alertCall = alertCalls[alertCalls.length - 1];
       const skipBtn = alertCall[2].find(
-        (btn: unknown): btn is { text: string; onPress: () => void } => 
-          typeof btn === 'object' && btn !== null && 
-          'text' in btn && (btn as any).text === 'Skip'
+        (btn: unknown): btn is { text: string; onPress: () => void } =>
+          typeof btn === 'object' && btn !== null && 'text' in btn && (btn as any).text === 'Skip'
       );
       skipBtn?.onPress();
 
@@ -857,9 +855,8 @@ describe('ComprehensiveRestaurantOnboardingScreen - Complete User Journey', () =
       const alertCalls = mockAlert.mock.calls;
       const alertCall = alertCalls[alertCalls.length - 1];
       const skipBtn = alertCall[2].find(
-        (btn: unknown): btn is { text: string; onPress: () => void } => 
-          typeof btn === 'object' && btn !== null && 
-          'text' in btn && (btn as any).text === 'Skip'
+        (btn: unknown): btn is { text: string; onPress: () => void } =>
+          typeof btn === 'object' && btn !== null && 'text' in btn && (btn as any).text === 'Skip'
       );
       skipBtn?.onPress();
 

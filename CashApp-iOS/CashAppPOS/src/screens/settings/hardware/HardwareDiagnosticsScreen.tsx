@@ -210,7 +210,7 @@ const HardwareDiagnosticsScreen: React.FC = () => {
 
     setTimeout(() => {
       const outcomes = ['passed', 'failed', 'warning'];
-const randomOutcome = outcomes[Math.floor(Math.random() * outcomes.length)] as unknown;
+      const randomOutcome = outcomes[Math.floor(Math.random() * outcomes.length)] as unknown;
 
       setDiagnosticTests((prev) =>
         prev.map((test) =>

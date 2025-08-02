@@ -219,7 +219,7 @@ export const debounceValidation = (
 ): ((...args: unknown[]) => void) => {
   let timeoutId: NodeJS.Timeout;
 
-return (...args: unknown[]) => {
+  return (...args: unknown[]) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => fn(...args), delay);
   };

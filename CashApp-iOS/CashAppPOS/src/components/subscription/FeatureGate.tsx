@@ -90,7 +90,7 @@ export const FeatureGate: React.FC<FeatureGateProps> = ({
       const result = await hasFeature(feature);
       setGateResult(result);
     } catch (error) {
-      logger.error('Feature gate check failed:', error);
+      console.error('Feature gate check failed:', error);
       setGateResult({
         hasAccess: false,
         reason: 'Failed to check feature access',
@@ -210,7 +210,7 @@ export const UsageLimitGate: React.FC<UsageLimitGateProps> = ({
 }) => {
   const { theme } = useTheme();
   const { checkUsageLimit } = useSubscription();
-  const [limitResult, setLimitResult] = useState<unknown>(null);
+  const [limitResult, setLimitResult] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -223,7 +223,7 @@ export const UsageLimitGate: React.FC<UsageLimitGateProps> = ({
       const result = await checkUsageLimit(limitType, increment);
       setLimitResult(result);
     } catch (error) {
-      logger.error('Usage limit check failed:', error);
+      console.error('Usage limit check failed:', error);
     } finally {
       setLoading(false);
     }

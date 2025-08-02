@@ -79,7 +79,7 @@ class SumUpCompatibilityService {
       // This would require native iOS code to check device capabilities
       return true; // Assume compatible for now
     } catch (error) {
-      logger.error('Device compatibility check failed:', error);
+      console.error('Device compatibility check failed:', error);
       return false;
     }
   }

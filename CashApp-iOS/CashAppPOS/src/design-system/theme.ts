@@ -3,7 +3,7 @@
 
 import { Dimensions, Platform } from 'react-native';
 
-const { width: screenWidth, height: _screenHeight } = Dimensions.get('window');
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 // Device categories
 export const deviceTypes = {

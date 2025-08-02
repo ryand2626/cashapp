@@ -3,8 +3,6 @@
 Test CORS parsing directly
 """
 
-
-"""
 import os
 import sys
 

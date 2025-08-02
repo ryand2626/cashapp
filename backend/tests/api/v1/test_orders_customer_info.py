@@ -38,7 +38,7 @@ def test_user_token(db_session: Session) -> str:
     if not user:
         user = UserModel(
             email=test_user_email,
-            hashed_password=os.environ.get("TEST_USER_HASH", "$2b$12$dynamicFakeHash"), # In real tests, hash properly or use a factory
+            hashed_password="fakepassword", # In real tests, hash properly or use a factory
             is_active=True,
             role="staff", # or whatever role is needed to create orders
             restaurant_id="a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11" # Example UUID, use a valid one or create a restaurant

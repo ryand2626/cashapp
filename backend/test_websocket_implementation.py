@@ -4,8 +4,6 @@ Test script for WebSocket Real-time Events Implementation
 Tests WebSocket connections, message broadcasting, and event handling
 """
 
-
-"""
 import asyncio
 import websockets
 import json

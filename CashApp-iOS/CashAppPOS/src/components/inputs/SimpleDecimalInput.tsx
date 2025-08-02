@@ -13,7 +13,7 @@ interface SimpleDecimalInputProps {
   minValue?: number;
   decimalPlaces?: number;
   label?: string;
-  style?: unknown;
+  style?: any;
   disabled?: boolean;
 }
 

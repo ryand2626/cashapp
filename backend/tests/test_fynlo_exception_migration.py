@@ -5,8 +5,6 @@ This test module verifies that all core security modules properly use
 FynloException instead of HTTPException.
 """
 
-
-"""
 import pytest
 from unittest.mock import Mock, patch, AsyncMock
 from fastapi import Request
@@ -46,10 +44,8 @@ class TestFynloExceptionMigration:
         mock_db = Mock(spec=Session)
         
         # Test invalid bearer token
-        import uuid
-        invalid_token = f"invalid_token_{uuid.uuid4().hex[:8]}"
         with pytest.raises(AuthenticationException) as exc_info:
-            await get_current_user(mock_request, f"Bearer {invalid_token}", mock_db)
+            await get_current_user(mock_request, "Bearer invalid_token", mock_db)
         
         assert exc_info.value.status_code == 401
         assert exc_info.value.error_code == "INVALID_CREDENTIALS"
@@ -131,13 +127,11 @@ class TestFynloExceptionMigration:
         mock_db = Mock(spec=Session)
         
         # Test invalid 2FA token
-        import uuid
-        invalid_2fa_token = f"invalid_2fa_{uuid.uuid4().hex[:6]}"
         with pytest.raises(FynloException) as exc_info:
             await two_fa.validate_two_factor_token(
                 db=mock_db,
                 user_id="test-user",
-                token=invalid_2fa_token
+                token="invalid"
             )
         
         assert exc_info.value.status_code == 400
@@ -181,8 +175,7 @@ class TestFynloExceptionMigration:
         
         # This should raise FynloException, not HTTPException
         try:
-            expired_token = f"expired_token_{uuid.uuid4().hex[:8]}"
-            await get_current_user(mock_request, f"Bearer {expired_token}", mock_db)
+            await get_current_user(mock_request, "Bearer expired_token", mock_db)
             assert False, "Should have raised exception"
         except Exception as e:
             # Verify it's FynloException, not HTTPException

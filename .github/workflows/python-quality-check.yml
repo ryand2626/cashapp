@@ -1,0 +1,84 @@
+name: Python Quality Check
+
+on:
+  push:
+    paths:
+      - 'backend/**/*.py'
+      - '.github/workflows/python-quality-check.yml'
+  pull_request:
+    paths:
+      - 'backend/**/*.py'
+      - '.github/workflows/python-quality-check.yml'
+
+jobs:
+  python-quality:
+    runs-on: ubuntu-latest
+    name: Python Quality Checks
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install quality tools
+      run: |
+        pip install --upgrade pip
+        pip install ruff black mypy flake8 bandit[toml]
+    
+    - name: Run Python syntax check (compile)
+      run: |
+        echo "1️⃣ Checking Python syntax with compile..."
+        cd backend
+        python -m compileall -q app || (echo "❌ Syntax errors found!" && exit 1)
+        echo "✅ Python syntax check passed!"
+    
+    - name: Run Ruff (fast Python linter)
+      run: |
+        echo "2️⃣ Running Ruff linter..."
+        cd backend
+        ruff check app --select F,E,W,C,B,I,N,UP
+        echo "✅ Ruff check passed!"
+    
+    - name: Run Black (code formatter check)
+      run: |
+        echo "3️⃣ Checking code formatting with Black..."
+        cd backend
+        black --check app
+        echo "✅ Black formatting check passed!"
+    
+    - name: Run MyPy (type checker)
+      continue-on-error: true  # Allow MyPy to fail initially as we fix type issues
+      run: |
+        echo "4️⃣ Running MyPy type checker..."
+        cd backend
+        mypy app --ignore-missing-imports --no-strict-optional || echo "⚠️ MyPy found type issues (non-blocking)"
+    
+    - name: Run Flake8 (style guide checker)
+      run: |
+        echo "5️⃣ Running Flake8 style checker..."
+        cd backend
+        # E501: line too long (we use Black for this)
+        # W503: line break before binary operator (conflicts with Black)
+        flake8 app --max-line-length=120 --extend-ignore=E501,W503
+        echo "✅ Flake8 check passed!"
+    
+    - name: Run Bandit (security linter)
+      run: |
+        echo "6️⃣ Running Bandit security check..."
+        cd backend
+        bandit -r app -ll -i
+        echo "✅ Bandit security check passed!"
+    
+    - name: Summary
+      if: always()
+      run: |
+        echo "📊 Python Quality Check Summary:"
+        echo "✅ 1. Compile - Syntax validation"
+        echo "✅ 2. Ruff - Fast Python linter"
+        echo "✅ 3. Black - Code formatting"
+        echo "⚠️ 4. MyPy - Type checking (non-blocking)"
+        echo "✅ 5. Flake8 - Style guide enforcement"
+        echo "✅ 6. Bandit - Security analysis"

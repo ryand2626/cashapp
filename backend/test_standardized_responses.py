@@ -3,8 +3,6 @@ Test script to verify standardized API responses
 Run this to validate the new response format works correctly
 """
 
-
-"""
 import asyncio
 import json
 from datetime import datetime
@@ -64,11 +62,8 @@ async def test_standardized_responses():
     
     # Test iOS login response
     print("📱 iOS LOGIN RESPONSE:")
-    import uuid
-    # Generate a dynamic test token
-    test_token = f"test_jwt_{uuid.uuid4().hex[:8]}"
     ios_login = iOSResponseHelper.login_success(
-        access_token=test_token,
+        access_token="jwt_token_here",
         user_data={
             "id": "user-123",
             "email": "user@example.com",

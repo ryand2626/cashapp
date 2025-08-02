@@ -60,12 +60,12 @@ const EnhancedPaymentScreen: React.FC = () => {
   const {
     cart,
     clearCart,
-_cartTotal,
+    _cartTotal,
     serviceChargePercentage,
     addTransactionFee,
     calculateServiceCharge,
     calculateTransactionFee,
-_calculateOrderTotal,
+    _calculateOrderTotal,
   } = useAppStore();
   const { paymentMethods, taxConfiguration } = useSettingsStore();
 
@@ -394,7 +394,7 @@ _calculateOrderTotal,
         method: selectedPaymentMethod,
       });
 
-const _savedOrder = await orderService.saveOrder(orderData);
+      const _savedOrder = await orderService.saveOrder(orderData);
 
       setProcessing(false);
 

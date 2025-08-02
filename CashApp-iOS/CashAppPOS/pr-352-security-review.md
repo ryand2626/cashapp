@@ -1,13 +1,11 @@
 # Security Review: PR #352 - WebSocket Restaurant Owner Onboarding Fix
 
 ## Executive Summary
-
 PR #352 addresses a critical UX issue where new restaurant owners couldn't connect to WebSocket during onboarding. The fix is functional but introduces several security concerns that need immediate attention.
 
 ## The Fix Analysis
 
 ### What Changed
-
 The PR modifies the `verify_websocket_access` function to allow restaurant owners without a `restaurant_id` to connect to "onboarding" endpoints:
 
 ```python
@@ -29,15 +27,12 @@ elif user.role == "restaurant_owner":
 ## 🔴 Critical Security Issues
 
 ### 1. **No Input Validation on restaurant_id**
-
 ```python
 restaurant_id: str = Path(..., description="Restaurant ID")
 ```
-
 **Risk**: SQL injection, path traversal, or malformed input attacks
 **Impact**: Could allow unauthorized access to other restaurants' data
-**Fix Required**:
-
+**Fix Required**: 
 ```python
 # Add validation
 if not re.match(r'^[a-zA-Z0-9-_]+$', restaurant_id):
@@ -47,24 +42,20 @@ if len(restaurant_id) > 50:
 ```
 
 ### 2. **Information Disclosure in Error Messages**
-
 ```python
 logger.warning(f"Restaurant owner without restaurant trying to access: {restaurant_id}")
 logger.warning(f"Restaurant owner access denied: {user.restaurant_id} != {restaurant_id}")
 ```
-
 **Risk**: Exposes internal system state and user relationships
 **Impact**: Attackers can enumerate valid restaurant IDs and user associations
 **Fix Required**: Use generic error messages for external responses
 
 ### 3. **Missing Rate Limiting**
-
 **Risk**: DoS attacks through WebSocket connection flooding
 **Impact**: System overload, service disruption
 **Fix Required**: Implement connection rate limiting per IP/user
 
 ### 4. **No Connection Limits**
-
 **Risk**: Resource exhaustion attacks
 **Impact**: Memory/CPU exhaustion through unlimited connections
 **Fix Required**: Limit concurrent connections per user/restaurant
@@ -72,23 +63,19 @@ logger.warning(f"Restaurant owner access denied: {user.restaurant_id} != {restau
 ## 🟡 Medium Security Issues
 
 ### 5. **Weak Token Handling**
-
 ```python
 token = websocket.query_params.get("token")
 ```
-
 **Risk**: Tokens in query parameters are logged and cached
 **Impact**: Token exposure in server logs, browser history
 **Recommendation**: Use headers exclusively for authentication tokens
 
 ### 6. **Missing CORS/Origin Validation**
-
 **Risk**: Cross-origin WebSocket hijacking
 **Impact**: Unauthorized connections from malicious websites
 **Fix Required**: Validate Origin header against whitelist
 
 ### 7. **No Message Size Limits**
-
 **Risk**: Memory exhaustion through large messages
 **Impact**: DoS through oversized payloads
 **Fix Required**: Implement message size limits
@@ -103,7 +90,6 @@ token = websocket.query_params.get("token")
 ## Recommended Immediate Actions
 
 ### 1. Add Input Validation Helper
-
 ```python
 def validate_restaurant_id(restaurant_id: str) -> bool:
     """Validate restaurant ID format"""
@@ -119,7 +105,6 @@ def validate_restaurant_id(restaurant_id: str) -> bool:
 ```
 
 ### 2. Implement Rate Limiting
-
 ```python
 from app.core.rate_limiter import RateLimiter
 
@@ -136,7 +121,6 @@ if not await rate_limiter.check_allowed(user_id, client_ip):
 ```
 
 ### 3. Add Connection Limits
-
 ```python
 # In ConnectionManager
 def can_connect(self, user_id: str, restaurant_id: str) -> bool:
@@ -148,7 +132,6 @@ def can_connect(self, user_id: str, restaurant_id: str) -> bool:
 ```
 
 ### 4. Sanitize Error Messages
-
 ```python
 # Instead of exposing details
 logger.warning(f"Access denied for user {user.id}")
@@ -159,7 +142,6 @@ await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
 ## Testing Recommendations
 
 1. **Security Tests**:
-
    - Attempt SQL injection in restaurant_id
    - Try connecting with invalid/expired tokens
    - Test rate limiting with connection flooding
@@ -178,7 +160,6 @@ While PR #352 successfully fixes the onboarding issue, it requires immediate sec
 **Recommendation**: Approve with required changes - implement security fixes in a follow-up PR before deploying to production.
 
 ## Security Checklist
-
 - [ ] Add input validation for restaurant_id
 - [ ] Implement rate limiting
 - [ ] Add connection limits per user

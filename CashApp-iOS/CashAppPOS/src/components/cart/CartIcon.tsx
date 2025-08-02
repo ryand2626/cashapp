@@ -5,7 +5,6 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { useTheme } from '../../design-system/ThemeProvider';
-import type { Theme } from '../../design-system/theme';
 
 interface Props {
   count: number;
@@ -49,7 +48,7 @@ const CartIcon: React.FC<Props> = ({ count, onPress, testID, size = 40 }) => {
   );
 };
 
-const createStyles = (theme: Theme) =>
+const createStyles = (theme: any) =>
   StyleSheet.create({
     container: {
       padding: 8,

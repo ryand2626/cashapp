@@ -264,7 +264,7 @@ const InventoryReportDetailScreen = () => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Inventory Items ({filteredData.length})</Text>
 
-{filteredData.map((item, _index) => (
+            {filteredData.map((item, _index) => (
               <View key={item.id} style={styles.itemCard}>
                 <View style={styles.itemHeader}>
                   <View style={styles.itemInfo}>

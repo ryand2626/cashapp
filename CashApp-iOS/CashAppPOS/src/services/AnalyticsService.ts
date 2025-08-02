@@ -147,7 +147,7 @@ class AnalyticsService {
     metrics: string[],
     restaurants: string[],
     period: { start: Date; end: Date }
-  ): Promise<unknown> {
+  ): Promise<any> {
     // Simulate custom report generation
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
@@ -363,7 +363,7 @@ class AnalyticsService {
     };
   }
 
-  private generateTrendData(_period: string): TrendData {
+  private generateTrendData(period: string): TrendData {
     return {
       daily: this.generatePeriodData('daily', 4200),
       weekly: this.generatePeriodData('weekly', 29400),
@@ -450,7 +450,7 @@ class AnalyticsService {
     return periods;
   }
 
-  private generateCustomReportData(metrics: string[], restaurants: string[]): unknown {
+  private generateCustomReportData(metrics: string[], restaurants: string[]): any {
     // Generate sample custom report data
     return {
       summary: {
@@ -463,7 +463,7 @@ class AnalyticsService {
         metrics: metrics.reduce((acc, metric) => {
           acc[metric] = Math.round(Math.random() * 10000);
           return acc;
-        }, {} as unknown),
+        }, {} as any),
       })),
     };
   }

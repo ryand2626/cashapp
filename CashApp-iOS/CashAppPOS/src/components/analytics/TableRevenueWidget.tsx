@@ -110,7 +110,7 @@ const TableRevenueWidget: React.FC<TableRevenueWidgetProps> = ({ onPress, compac
   const totalRevenue = data.reduce((sum, table) => sum + table.total_revenue, 0);
   const totalOrders = data.reduce((sum, table) => sum + table.order_count, 0);
 
-const renderTableRow = (table: TableRevenueData, _index: number) => (
+  const renderTableRow = (table: TableRevenueData, _index: number) => (
     <View
       key={table.table_id}
       style={[styles.tableRow, { borderBottomColor: theme.colors.border }]}

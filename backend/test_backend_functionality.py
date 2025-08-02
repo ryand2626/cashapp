@@ -4,8 +4,6 @@ Backend Functionality Test Script
 Tests core functionality without requiring external dependencies
 """
 
-
-"""
 import asyncio
 import sys
 import traceback

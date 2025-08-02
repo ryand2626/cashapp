@@ -4,8 +4,6 @@ Platform owners (Arno, Ryan) have full access - this is by design
 The vulnerability is between restaurants, not with platform owners
 """
 
-
-"""
 import pytest
 import uuid
 from unittest.mock import MagicMock, patch

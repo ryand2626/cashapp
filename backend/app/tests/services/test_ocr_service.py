@@ -20,6 +20,7 @@ def ocr_service() -> OCRService:
 async def test_parse_receipt_image_mock_milk_input(ocr_service: OCRService):
     """
     Tests the mock OCR service's parse_receipt_image method with input
+    that should trigger the 'milk' specific mock response.
     """
     # The mock service checks if "milk" is in the decoded string.
     # Let's create image_bytes that contain "milk".

@@ -4,8 +4,6 @@ Test Authentication Flow for Fynlo POS
 This script tests the complete authentication flow to identify issues
 """
 
-
-"""
 import asyncio
 import aiohttp
 import json
@@ -22,9 +20,9 @@ API_URL = "http://localhost:8000/api/v1"
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://eweggzpvuqczrrrwszyy.supabase.co")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
-# Test credentials - get from environment for security
-TEST_EMAIL = os.getenv("TEST_EMAIL", "test@example.com")  # Replace with your test email
-TEST_PASSWORD = os.getenv("TEST_PASSWORD", "test_password_placeholder")  # Replace with your test password
+# Test credentials
+TEST_EMAIL = "test@example.com"  # Replace with your test email
+TEST_PASSWORD = "testpassword123"  # Replace with your test password
 
 
 async def test_supabase_direct():

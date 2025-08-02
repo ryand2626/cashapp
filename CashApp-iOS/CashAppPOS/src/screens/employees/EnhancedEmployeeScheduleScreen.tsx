@@ -158,7 +158,7 @@ const EnhancedEmployeeScheduleScreen: React.FC = () => {
       } else {
         setWeekSchedule({ weekStart, shifts: [] });
       }
-} catch (e: unknown) {
+    } catch (e: unknown) {
       setError(e.message || 'Failed to load schedule data.');
       setEmployees([]);
       setWeekSchedule({ weekStart: getWeekStart(currentWeek), shifts: [] });

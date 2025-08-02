@@ -26,14 +26,15 @@ import SecurePaymentConfig from '../../services/SecurePaymentConfig';
 import type { PaymentMethod } from '../../services/SecurePaymentConfig';
 
 // Helper function to create theme-aware text styles
-const createThemedStyles = (theme: any) => StyleSheet.create({
-  textPrimary: { color: theme.colors.text },
-  textSecondary: { color: theme.colors.textSecondary },
-  textAccent: { color: theme.colors.accent },
-  textError: { color: theme.colors.error },
-  textOnPrimary: { color: theme.colors.onPrimary },
-  textPrimaryColor: { color: theme.colors.primary },
-});
+const createThemedStyles = (theme: any) =>
+  StyleSheet.create({
+    textPrimary: { color: theme.colors.text },
+    textSecondary: { color: theme.colors.textSecondary },
+    textAccent: { color: theme.colors.accent },
+    textError: { color: theme.colors.error },
+    textOnPrimary: { color: theme.colors.onPrimary },
+    textPrimaryColor: { color: theme.colors.primary },
+  });
 
 interface PaymentMethodSelectorProps {
   amount: number;
@@ -137,9 +138,7 @@ const SecurePaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
           </View>
           {amount > 0 && (
             <View style={styles.netAmountContainer}>
-              <Text style={[styles.netAmountLabel, themedStyles.textSecondary]}>
-                You receive:
-              </Text>
+              <Text style={[styles.netAmountLabel, themedStyles.textSecondary]}>You receive:</Text>
               <Text
                 style={[
                   styles.netAmount,
@@ -179,10 +178,7 @@ const SecurePaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
       <View style={[styles.container, styles.centerContent]}>
         <Icon name="alert-circle" size={48} color={theme.colors.error} />
         <Text style={[styles.errorText, themedStyles.textError]}>{error}</Text>
-        <TouchableOpacity
-          style={styles.retryButton}
-          onPress={() => loadPaymentMethods(true)}
-        >
+        <TouchableOpacity style={styles.retryButton} onPress={() => loadPaymentMethods(true)}>
           <Text style={[styles.retryButtonText, themedStyles.textOnPrimary]}>Retry</Text>
         </TouchableOpacity>
       </View>

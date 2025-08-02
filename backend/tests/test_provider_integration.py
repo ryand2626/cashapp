@@ -3,8 +3,6 @@ Provider Integration Tests
 Real integration tests for payment providers (requires test credentials)
 """
 
-
-"""
 import pytest
 import asyncio
 import os

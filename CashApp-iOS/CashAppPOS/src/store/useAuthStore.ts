@@ -77,7 +77,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       // Ensure token listeners are set up after successful sign-in
       get().setupTokenListeners();
-} catch (error: unknown) {
+    } catch (error: unknown) {
       set({
         isLoading: false,
         error: error.message || 'Failed to sign in',
@@ -105,7 +105,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       }
 
       set({ isLoading: false });
-} catch (error: unknown) {
+    } catch (error: unknown) {
       set({
         isLoading: false,
         error: error.message || 'Failed to sign up',
@@ -127,7 +127,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         isLoading: false,
         error: null,
       });
-} catch (error: unknown) {
+    } catch (error: unknown) {
       set({
         isLoading: false,
         error: error.message || 'Failed to sign out',
@@ -186,7 +186,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           isLoading: false,
         });
       }
-} catch (error: unknown) {
+    } catch (error: unknown) {
       // Don't log error for missing session - this is normal on first launch
       set({
         isAuthenticated: false,

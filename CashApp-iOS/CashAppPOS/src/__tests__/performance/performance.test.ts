@@ -220,7 +220,7 @@ describe('Performance Tests', () => {
       const startTime = performance.now();
 
       // Simulate heavy computation
-      let result = 0;
+      const result = 0;
       for (let i = 0; i < 10000; i++) {
         _result += Math.random();
       }

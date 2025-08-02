@@ -56,7 +56,7 @@ const ResponsiveGrid: React.FC<ResponsiveGridProps> = ({
   const currentColumns = useResponsiveColumns(columns, 1);
   const currentSpacing = useResponsiveSpacing(spacingProp, 4);
   const spacingValue = theme.spacing[currentSpacing];
-  
+
   // Create dynamic styles based on current values
   const dynamicStyles = createDynamicStyles(theme, currentColumns, spacingValue);
 
@@ -68,22 +68,15 @@ const ResponsiveGrid: React.FC<ResponsiveGridProps> = ({
   for (let i = 0; i < childArray.length; i += currentColumns) {
     rows.push(childArray.slice(i, i + currentColumns));
   }
-  
 
   return (
     <View style={[dynamicStyles.grid, style]} testID={testID}>
       {rows.map((row, rowIndex) => (
-        <View 
-          key={rowIndex} 
-          style={[
-            dynamicStyles.row, 
-            dynamicStyles.rowWithMargin
-          ]}
-        >
+        <View key={rowIndex} style={[dynamicStyles.row, dynamicStyles.rowWithMargin]}>
           {row.map((child, itemIndex) => {
             const isFirstItem = itemIndex === 0;
             const isLastItem = itemIndex === row.length - 1;
-            
+
             return (
               <View
                 key={itemIndex}
@@ -101,7 +94,7 @@ const ResponsiveGrid: React.FC<ResponsiveGridProps> = ({
           {row.length < currentColumns &&
             Array.from({ length: currentColumns - row.length }).map((_, emptyIndex) => {
               const isLastEmpty = emptyIndex === currentColumns - row.length - 1;
-              
+
               return (
                 <View
                   key={`empty-${emptyIndex}`}
@@ -129,7 +122,7 @@ export const GridItem: React.FC<GridItemProps> = ({ children, _span, style }) =>
 const createDynamicStyles = (_theme: Theme, columns: number, spacing: number) => {
   const itemWidth = `${100 / columns}%`;
   const halfSpacing = spacing / 2;
-  
+
   return StyleSheet.create({
     grid: {
       // Base grid container

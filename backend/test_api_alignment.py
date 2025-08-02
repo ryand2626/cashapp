@@ -4,8 +4,6 @@ API Alignment Test Script
 Tests the newly implemented endpoints to ensure frontend compatibility
 """
 
-
-"""
 import requests
 import json
 from typing import Dict, Any

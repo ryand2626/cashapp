@@ -1,5 +1,8 @@
 """Convert monetary fields from FLOAT to DECIMAL
 
+Revision ID: 1d25e080d454
+Revises: 370119f53344
+Create Date: 2025-06-21 09:08:23.308571
 
 """
 from alembic import op

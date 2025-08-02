@@ -4,8 +4,6 @@ Test script for Push Notification Service Implementation
 Tests APNs integration, device registration, and notification sending
 """
 
-
-"""
 import requests
 import json
 from datetime import datetime, timedelta

@@ -3,8 +3,6 @@ Verification tests for RLS bug fixes
 Ensures all fixes work correctly
 """
 
-
-"""
 import pytest
 import asyncio
 import threading
@@ -119,6 +117,7 @@ class TestDatabaseConnectionFixed:
         
         # Check the function signature - should use Depends(get_db) not lambda
         import inspect
+        sig = inspect.signature(rls_dep)
         
         # The db parameter should have a Depends default
         db_param = sig.parameters.get('db')
@@ -143,6 +142,7 @@ class TestRLSSessionVariableNamesFixed:
         
         # Simulate the checkout event
         from app.core.database import receive_checkout
+        receive_checkout(mock_conn, {}, None)
         
         # Check what was executed
         executed_commands = [call[0][0] for call in mock_cursor.execute.call_args_list]
@@ -168,6 +168,7 @@ class TestResetSpecificVariablesFixed:
         
         # Simulate the checkin event
         from app.core.database import receive_checkin
+        receive_checkin(mock_conn, {})
         
         # Check what was executed
         executed_commands = [call[0][0] for call in mock_cursor.execute.call_args_list]

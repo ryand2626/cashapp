@@ -1196,10 +1196,15 @@ async def update_table_server(
         message=f"Table {table.name} server updated"
     )
 
-# Layout Management Endpoints - TEMPORARILY DISABLED UNTIL MIGRATION IS APPLIED
+# Layout Management Endpoints
+# COMMENTED OUT: Floor plan layout endpoints temporarily disabled 
+# The floor_plan_layout column was removed from the database
+# These endpoints need to be updated to use a different storage mechanism
+# before they can be re-enabled
+
 # class FloorPlanLayoutUpdate(BaseModel):
 #     layout: dict
-# 
+
 # @router.get("/floor-plan/layout")
 # async def get_floor_plan_layout(
 #     current_restaurant_id: Optional[str] = Query(None, description="Specific restaurant ID for multi-restaurant users"),
@@ -1227,12 +1232,12 @@ async def update_table_server(
 #     
 #     return APIResponseHelper.success(
 #         data={
-#             "layout": {},  # Temporarily disabled until migration is applied
+#             "layout": restaurant.floor_plan_layout or {},
 #             "restaurant_id": str(restaurant.id)
 #         },
 #         message="Floor plan layout retrieved successfully"
 #     )
-# 
+
 # @router.put("/floor-plan/layout")
 # async def update_floor_plan_layout(
 #     layout_data: FloorPlanLayoutUpdate,
@@ -1268,14 +1273,14 @@ async def update_table_server(
 #             detail=f"Layout validation failed: {str(e)}"
 #         )
 #     
-#     # restaurant.floor_plan_layout = validated_layout  # Temporarily disabled until migration is applied
+#     restaurant.floor_plan_layout = validated_layout
 #     restaurant.updated_at = datetime.utcnow()
 #     db.commit()
 #     db.refresh(restaurant)
 #     
 #     return APIResponseHelper.success(
 #         data={
-#             "layout": validated_layout,  # Return what was sent since we can't save it yet
+#             "layout": restaurant.floor_plan_layout,
 #             "restaurant_id": str(restaurant.id)
 #         },
 #         message="Floor plan layout updated successfully"

@@ -101,7 +101,7 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
       }));
     };
 
-const _handleReconnecting = (data: { attempt: number; maxAttempts: number }) => {
+    const _handleReconnecting = (data: { attempt: number; maxAttempts: number }) => {
       setState((prev) => ({
         ...prev,
         connecting: true,

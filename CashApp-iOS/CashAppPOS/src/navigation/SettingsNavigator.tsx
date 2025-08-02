@@ -33,18 +33,14 @@ import SettingsScreen from '../screens/settings/SettingsScreen';
 
 // Import Hardware screens
 import AccessibilityScreen from '../screens/settings/user/AccessibilityScreen';
+import AccessibilityScreen from '../screens/settings/user/AccessibilityScreen';
 import LocalizationScreen from '../screens/settings/user/LocalizationScreen';
 import NotificationSettingsScreen from '../screens/settings/user/NotificationSettingsScreen';
+import ThemeOptionsScreen from '../screens/settings/user/ThemeOptionsScreen';
 import UserProfileScreen from '../screens/settings/user/UserProfileScreen';
 import UserSettingsScreen from '../screens/settings/UserSettingsScreen';
-import ThemeOptionsScreen from '../screens/settings/user/ThemeOptionsScreen';
-import LocalizationScreen from '../screens/settings/user/LocalizationScreen';
-import AccessibilityScreen from '../screens/settings/user/AccessibilityScreen';
-import DeveloperSettingsScreen from '../screens/settings/DeveloperSettingsScreen';
 import XeroSettingsScreen from '../screens/settings/XeroSettingsScreen';
 import XeroSyncDashboard from '../screens/xero/XeroSyncDashboard';
-import RestaurantProfileScreen from '../screens/settings/RestaurantProfileScreen';
-import RestaurantPlatformOverridesScreen from '../screens/settings/RestaurantPlatformOverridesScreen';
 
 // Recipe Management Screens
 

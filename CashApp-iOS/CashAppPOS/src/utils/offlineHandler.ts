@@ -335,7 +335,7 @@ class OfflineHandler {
 
         // Remove from queue on success
         await this.removeFromQueue(action.id);
-} catch (_error) {
+      } catch (_error) {
         // Increment retry count
         action.retryCount++;
 

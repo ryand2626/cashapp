@@ -37,7 +37,7 @@ class SafeAlertManager {
     // Wrap button callbacks to process next alert after dismissal
     const wrappedButtons = alert.buttons?.map((button) => ({
       ...button,
-      onPress: (...args: unknown[]) => {
+      onPress: (...args: any[]) => {
         // Call original onPress if exists
         if (button.onPress) {
           button.onPress(...args);

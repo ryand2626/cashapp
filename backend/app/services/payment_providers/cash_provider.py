@@ -23,8 +23,7 @@ class CashProvider(BasePaymentProvider):
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         # Cash provider might not need specific API keys from config in the same way
         # as online gateways. Pass a minimal config or defaults.
-        # Use None for api_key since cash transactions don't require API authentication
-        super().__init__(api_key=None, config=config or {})
+        super().__init__(api_key="N/A", config=config or {})
         self.provider_name = "cash"
         logger.info("CashProvider initialized.")
 

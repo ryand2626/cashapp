@@ -470,7 +470,6 @@ const OrdersScreen: React.FC = () => {
   );
 };
 
-// eslint-disable-next-line react-native/no-unused-styles
 const createStyles = (theme: unknown) =>
   StyleSheet.create({
     container: {

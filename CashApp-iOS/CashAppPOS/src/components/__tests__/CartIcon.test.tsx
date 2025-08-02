@@ -12,7 +12,7 @@ import CartIcon from '../cart/CartIcon';
 jest.mock('react-native-vector-icons/MaterialIcons', () => {
   const RealIcon = jest.requireActual('react-native-vector-icons/MaterialIcons');
   // Mock the specific icon being used in CartIcon
-return (props: unknown) => (
+  return (props: unknown) => (
     <RealIcon name={props.name} size={props.size} color={props.color} testID="mock-icon" />
   );
 });

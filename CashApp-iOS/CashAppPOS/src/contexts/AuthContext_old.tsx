@@ -95,7 +95,7 @@ const STORAGE_KEYS = {
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // Get auth state from Zustand store
   const authStoreUser = useAuthStore((state) => state.user);
-const _isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const _isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const _authLoading = useAuthStore((state) => state.isLoading);
   const signInStore = useAuthStore((state) => state.signIn);
   const _signOutStore = useAuthStore((state) => state.signOut);
@@ -191,7 +191,7 @@ const _isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const signUp = async (
     userData: Partial<User>,
     businessData: Partial<Business>,
-_password: string
+    _password: string
   ): Promise<boolean> => {
     try {
       setIsLoading(true);

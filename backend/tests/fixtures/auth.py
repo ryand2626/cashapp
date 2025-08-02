@@ -6,14 +6,6 @@ from unittest.mock import Mock, AsyncMock
 from datetime import datetime, timedelta
 import jwt
 import uuid
-import os
-
-
-def get_test_jwt_secret():
-    """Get JWT secret for testing from environment or use default"""
-    # For tests, we can use a predictable secret that's clearly for testing
-    # This is not a security risk as it's only used in test environments
-    return os.environ.get("TEST_JWT_SECRET", "test-jwt-secret-do-not-use-in-production")
 
 
 @pytest.fixture
@@ -22,10 +14,6 @@ def mock_supabase_client():
     client = Mock()
     
     # Mock auth methods
-    # Use dynamic test tokens instead of hardcoded values
-    test_access_token = f"test_access_{uuid.uuid4().hex[:8]}"
-    test_refresh_token = f"test_refresh_{uuid.uuid4().hex[:8]}"
-    
     client.auth.sign_in_with_password.return_value = Mock(
         user=Mock(
             id=str(uuid.uuid4()),
@@ -33,8 +21,8 @@ def mock_supabase_client():
             user_metadata={"subscription_plan": "beta"}
         ),
         session=Mock(
-            access_token=test_access_token,
-            refresh_token=test_refresh_token
+            access_token="test_access_token",
+            refresh_token="test_refresh_token"
         )
     )
     
@@ -52,7 +40,7 @@ def mock_supabase_client():
             email="test@example.com"
         ),
         session=Mock(
-            access_token=test_access_token
+            access_token="test_access_token"
         )
     )
     
@@ -68,7 +56,7 @@ def auth_headers():
             "email": "test@example.com",
             "exp": datetime.utcnow() + timedelta(hours=1)
         },
-        get_test_jwt_secret(),
+        "test_secret",
         algorithm="HS256"
     )
     return {"Authorization": f"Bearer {token}"}
@@ -84,7 +72,7 @@ def platform_owner_headers():
             "role": "platform_owner",
             "exp": datetime.utcnow() + timedelta(hours=1)
         },
-        get_test_jwt_secret(),
+        "test_secret",
         algorithm="HS256"
     )
     return {"Authorization": f"Bearer {token}"}
@@ -101,7 +89,7 @@ def restaurant_owner_headers(test_restaurant):
             "restaurant_id": test_restaurant.id,
             "exp": datetime.utcnow() + timedelta(hours=1)
         },
-        get_test_jwt_secret(),
+        "test_secret",
         algorithm="HS256"
     )
     return {"Authorization": f"Bearer {token}"}
@@ -118,7 +106,7 @@ def manager_headers(test_restaurant):
             "restaurant_id": test_restaurant.id,
             "exp": datetime.utcnow() + timedelta(hours=1)
         },
-        get_test_jwt_secret(),
+        "test_secret",
         algorithm="HS256"
     )
     return {"Authorization": f"Bearer {token}"}
@@ -135,7 +123,7 @@ def employee_headers(test_restaurant):
             "restaurant_id": test_restaurant.id,
             "exp": datetime.utcnow() + timedelta(hours=1)
         },
-        get_test_jwt_secret(),
+        "test_secret",
         algorithm="HS256"
     )
     return {"Authorization": f"Bearer {token}"}

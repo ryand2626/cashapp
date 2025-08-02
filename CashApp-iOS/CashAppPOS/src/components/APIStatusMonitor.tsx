@@ -50,7 +50,7 @@ const APIStatusMonitor: React.FC<APIStatusMonitorProps> = ({
       setIsConnected(connected);
       setLastCheckTime(new Date());
     } catch (error) {
-      logger.error('Force check failed:', error);
+      console.error('Force check failed:', error);
     } finally {
       setIsTesting(false);
     }
@@ -68,7 +68,7 @@ const APIStatusMonitor: React.FC<APIStatusMonitorProps> = ({
       const apiTestService = dataService.getAPITestingService();
       await apiTestService.runFullAPITestSuite();
       Alert.alert('API Test Complete', 'Check the API Test screen for detailed results.');
-    } catch (_error) {
+    } catch (error) {
       Alert.alert('API Test Failed', 'Error running API test suite.');
     } finally {
       setIsTesting(false);

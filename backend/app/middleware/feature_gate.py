@@ -6,17 +6,16 @@ to features based on subscription plans.
 """
 
 from functools import wraps
-from fastapi import Request, Depends
+from fastapi import HTTPException, Request, Depends
 from sqlalchemy.orm import Session
 from typing import Callable, Optional, List, Tuple
 
 from app.core.database import get_db
 from app.models.subscription import RestaurantSubscription, SubscriptionUsage
 from app.core.auth import get_current_user
-from app.core.exceptions import FynloException
 
 
-class FeatureGateError(FynloException):
+class FeatureGateError(HTTPException):
     """Custom exception for feature gate violations"""
     
     def __init__(self, feature_name: str, current_plan: str = None, required_plans: List[str] = None):
@@ -24,23 +23,19 @@ class FeatureGateError(FynloException):
         self.current_plan = current_plan
         self.required_plans = required_plans or []
         
-        details = {
+        detail = {
             "error": "feature_access_denied",
+            "message": f"Feature '{feature_name}' is not available in your current plan",
             "feature": feature_name,
             "current_plan": current_plan,
             "upgrade_required": True,
             "required_plans": required_plans
         }
         
-        super().__init__(
-            message=f"Feature '{feature_name}' is not available in your current plan",
-            error_code="FEATURE_ACCESS_DENIED",
-            details=details,
-            status_code=403
-        )
+        super().__init__(status_code=403, detail=detail)
 
 
-class UsageLimitError(FynloException):
+class UsageLimitError(HTTPException):
     """Custom exception for usage limit violations"""
     
     def __init__(self, limit_type: str, current_usage: int, limit: int, current_plan: str = None):
@@ -49,8 +44,9 @@ class UsageLimitError(FynloException):
         self.limit = limit
         self.current_plan = current_plan
         
-        details = {
+        detail = {
             "error": "usage_limit_exceeded",
+            "message": f"Usage limit exceeded for {limit_type}: {current_usage}/{limit}",
             "limit_type": limit_type,
             "current_usage": current_usage,
             "limit": limit,
@@ -58,12 +54,7 @@ class UsageLimitError(FynloException):
             "upgrade_required": True
         }
         
-        super().__init__(
-            message=f"Usage limit exceeded for {limit_type}: {current_usage}/{limit}",
-            error_code="USAGE_LIMIT_EXCEEDED", 
-            details=details,
-            status_code=429
-        )
+        super().__init__(status_code=429, detail=detail)
 
 
 def get_restaurant_subscription(restaurant_id: int, db: Session) -> Optional[RestaurantSubscription]:

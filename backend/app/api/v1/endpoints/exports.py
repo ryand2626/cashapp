@@ -5,7 +5,7 @@ TEMPORARILY DISABLED DUE TO MISSING DEPENDENCIES
 
 from typing import Optional
 from datetime import date
-from fastapi import APIRouter, Depends, Query, Request
+from fastapi import APIRouter, Depends, Query, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db, User

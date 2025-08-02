@@ -3,6 +3,9 @@
  * Testing complete user authentication workflow
  */
 
+// Import global test helpers
+/* global logout */
+
 describe('Login Flow', () => {
   beforeEach(async () => {
     await device.reloadReactNative();

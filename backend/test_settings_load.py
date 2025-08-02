@@ -3,8 +3,6 @@
 Test settings loading order
 """
 
-
-"""
 import os
 import sys
 
@@ -19,6 +17,7 @@ print(f"\nSet APP_ENV to: {os.getenv('APP_ENV')}")
 
 # Load the appropriate .env file
 from dotenv import load_dotenv
+env_file = f".env.{os.getenv('APP_ENV', 'development')}"
 print(f"Loading env file: {env_file}")
 load_dotenv(dotenv_path=env_file, override=True)
 
@@ -42,6 +41,7 @@ for key in ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "ENVIRONMENT", "DATABAS
 print("\nImporting settings...")
 try:
     from app.core.config import settings
+    print("✅ Settings imported successfully")
     print(f"settings.ENVIRONMENT: {settings.ENVIRONMENT}")
     print(f"settings.SUPABASE_URL: {'SET' if settings.SUPABASE_URL else 'NOT SET'}")
     print(f"settings.SUPABASE_SERVICE_ROLE_KEY: {'SET' if settings.SUPABASE_SERVICE_ROLE_KEY else 'NOT SET'}")

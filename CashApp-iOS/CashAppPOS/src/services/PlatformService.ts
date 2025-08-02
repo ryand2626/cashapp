@@ -159,7 +159,7 @@ class PlatformService {
       const settingsData = await this.makeRequest(endpoint);
 
       // Handle different API response formats
-let settingsObject: Record<string, unknown>;
+      let settingsObject: Record<string, unknown>;
 
       if (settingsData && typeof settingsData === 'object') {
         // If it's already an object, use it directly
@@ -204,7 +204,7 @@ let settingsObject: Record<string, unknown>;
 
   async updatePlatformSetting(
     configKey: string,
-configValue: unknown,
+    configValue: unknown,
     changeReason?: string
   ): Promise<boolean> {
     try {
@@ -220,7 +220,7 @@ configValue: unknown,
   }
 
   async bulkUpdatePlatformSettings(
-updates: Record<string, unknown>,
+    updates: Record<string, unknown>,
     changeReason?: string
   ): Promise<{ successful: number; failed: number; errors: Record<string, string> }> {
     try {

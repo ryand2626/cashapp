@@ -1,4 +1,3 @@
-import os
 import pytest
 import time
 from fastapi.testclient import TestClient
@@ -89,7 +88,7 @@ def test_user_based_rate_limit_on_protected_endpoint():
     # 1. Create a user and log in to get a token
     db = TestingSessionLocal()
     test_user_email = "user_limit_test@example.com"
-    test_password = os.environ.get("TEST_USER_PASSWORD", "test_strong_password_ratelimit")
+    test_password = "strongpassword"
 
     existing_user = db.query(User).filter(User.email == test_user_email).first()
     if not existing_user:

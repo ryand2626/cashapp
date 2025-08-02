@@ -3,6 +3,9 @@
  * Testing complete order creation and processing workflow
  */
 
+// Import global test helpers
+/* global loginAsTestUser, logout, addItemToCart, openPaymentModal, completePayment */
+
 describe('Order Flow', () => {
   beforeEach(async () => {
     await device.reloadReactNative();

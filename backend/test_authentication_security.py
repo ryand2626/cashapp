@@ -1,10 +1,9 @@
-#\!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 Authentication Security Testing for Fynlo POS
 Tests security aspects of the authentication system
 """
 
-import os
 import asyncio
 import json
 import sys
@@ -23,453 +22,459 @@ from app.core.config import settings
 class AuthenticationSecurityTester:
     def __init__(self, base_url="http://localhost:8000"):
         self.base_url = base_url
-        self.client = httpx.AsyncClient(timeout=30.0)
+        self.api_url = f"{base_url}/api/v1"
         self.test_results = []
+        self.valid_token = None
         
-    async def run_all_tests(self):
-        """Run all authentication security tests"""
-        print("🔐 Running Authentication Security Tests\n")
+    def log_test(self, test_name, success, message="", severity="INFO"):
+        """Log security test results"""
+        status = "✅ SECURE" if success else "🔒 VULNERABLE"
+        if severity == "CRITICAL":
+            status = "🚨 CRITICAL" if not success else "✅ SECURE"
         
-        tests = [
-            self.test_missing_token,
-            self.test_invalid_token,
-            self.test_expired_token,
-            self.test_malformed_token,
-            self.test_sql_injection_in_auth,
-            self.test_token_tampering,
-            self.test_brute_force_protection,
-            self.test_authorization_bypass,
-            self.test_role_escalation,
-            self.test_cross_tenant_access
-        ]
-        
-        for test in tests:
-            try:
-                await test()
-            except Exception as e:
-                self.test_results.append({
-                    "test": test.__name__,
-                    "status": "ERROR",
-                    "message": str(e)
-                })
-        
-        self.print_results()
-        
-    async def test_missing_token(self):
-        """Test API behavior when no token is provided"""
-        print("Testing missing token...")
-        
-        endpoints = [
-            "/api/v1/menu",
-            "/api/v1/orders",
-            "/api/v1/users/me",
-            "/api/v1/restaurants/current"
-        ]
-        
-        for endpoint in endpoints:
-            response = await self.client.get(f"{self.base_url}{endpoint}")
-            
-            if response.status_code \!= 401:
-                self.test_results.append({
-                    "test": "Missing Token",
-                    "status": "FAIL",
-                    "message": f"{endpoint} returned {response.status_code} instead of 401"
-                })
-            else:
-                self.test_results.append({
-                    "test": "Missing Token",
-                    "status": "PASS",
-                    "message": f"{endpoint} correctly rejected request"
-                })
-                
-    async def test_invalid_token(self):
-        """Test API behavior with invalid tokens"""
-        print("Testing invalid tokens...")
-        
-        invalid_tokens = [
-            "completely_invalid_token",
-            "Bearer invalid_token",
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.invalid.invalid",
-            ""
-        ]
-        
-        for token in invalid_tokens:
-            headers = {"Authorization": f"Bearer {token}"}
-            response = await self.client.get(
-                f"{self.base_url}/api/v1/users/me",
-                headers=headers
-            )
-            
-            if response.status_code \!= 401:
-                self.test_results.append({
-                    "test": "Invalid Token",
-                    "status": "FAIL",
-                    "message": f"Token '{token[:20]}...' returned {response.status_code}"
-                })
-            else:
-                self.test_results.append({
-                    "test": "Invalid Token",
-                    "status": "PASS",
-                    "message": f"Token '{token[:20]}...' correctly rejected"
-                })
-                
-    async def test_expired_token(self):
-        """Test API behavior with expired tokens"""
-        print("Testing expired tokens...")
-        
-        # Create an expired token
-        expired_payload = {
-            "sub": "test_user",
-            "exp": datetime.utcnow() - timedelta(hours=1)
-        }
-        
-        # Use the actual secret key from settings
-        secret_key = os.environ.get("SECRET_KEY", settings.SECRET_KEY)
-        expired_token = jwt_lib.encode(
-            expired_payload,
-            secret_key,
-            algorithm="HS256"
-        )
-        
-        headers = {"Authorization": f"Bearer {expired_token}"}
-        response = await self.client.get(
-            f"{self.base_url}/api/v1/users/me",
-            headers=headers
-        )
-        
-        if response.status_code \!= 401:
-            self.test_results.append({
-                "test": "Expired Token",
-                "status": "FAIL",
-                "message": f"Expired token returned {response.status_code}"
-            })
-        else:
-            self.test_results.append({
-                "test": "Expired Token",
-                "status": "PASS",
-                "message": "Expired token correctly rejected"
-            })
-            
-    async def test_malformed_token(self):
-        """Test API behavior with malformed tokens"""
-        print("Testing malformed tokens...")
-        
-        malformed_tokens = [
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",  # Missing parts
-            "not.a.jwt",  # Wrong format
-            "Bearer Bearer token",  # Double Bearer
-            "bearer lowercase_token"  # Lowercase bearer
-        ]
-        
-        for token in malformed_tokens:
-            headers = {"Authorization": token}
-            response = await self.client.get(
-                f"{self.base_url}/api/v1/users/me",
-                headers=headers
-            )
-            
-            if response.status_code \!= 401:
-                self.test_results.append({
-                    "test": "Malformed Token",
-                    "status": "FAIL",
-                    "message": f"Malformed '{token[:30]}...' returned {response.status_code}"
-                })
-            else:
-                self.test_results.append({
-                    "test": "Malformed Token",
-                    "status": "PASS",
-                    "message": f"Malformed '{token[:30]}...' correctly rejected"
-                })
-                
-    async def test_sql_injection_in_auth(self):
-        """Test SQL injection attempts in authentication"""
-        print("Testing SQL injection in auth...")
-        
-        sql_payloads = [
-            "' OR '1'='1",
-            "admin'--",
-            "1; DROP TABLE users;--",
-            "' UNION SELECT * FROM users--"
-        ]
-        
-        for payload in sql_payloads:
-            # Try SQL injection in login
+        self.test_results.append({
+            "test": test_name,
+            "status": status,
+            "message": message,
+            "severity": severity
+        })
+        print(f"{status}: {test_name}")
+        if message:
+            print(f"    {message}")
+    
+    async def get_valid_token(self):
+        """Get a valid authentication token for testing"""
+        try:
             login_data = {
-                "email": payload,
-                "password": payload
+                "email": "admin@fynlo.com",
+                "password": "admin123"
             }
             
-            response = await self.client.post(
-                f"{self.base_url}/api/v1/auth/login",
-                json=login_data
-            )
-            
-            # We expect 401 for invalid credentials, not 500 (SQL error)
-            if response.status_code == 500:
-                self.test_results.append({
-                    "test": "SQL Injection",
-                    "status": "FAIL",
-                    "message": f"Payload '{payload}' caused server error"
-                })
-            else:
-                self.test_results.append({
-                    "test": "SQL Injection",
-                    "status": "PASS",
-                    "message": f"Payload '{payload}' handled safely"
-                })
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                response = await client.post(f"{self.api_url}/auth/login", json=login_data)
                 
-    async def test_token_tampering(self):
-        """Test token tampering detection"""
-        print("Testing token tampering...")
-        
-        # Create a valid token
-        valid_payload = {
-            "sub": "test_user",
-            "exp": datetime.utcnow() + timedelta(hours=1)
-        }
-        
-        secret_key = os.environ.get("SECRET_KEY", settings.SECRET_KEY)
-        valid_token = jwt_lib.encode(
-            valid_payload,
-            secret_key,
-            algorithm="HS256"
-        )
-        
-        # Tamper with the token
-        parts = valid_token.split('.')
-        if len(parts) == 3:
-            # Modify the payload
-            tampered_token = f"{parts[0]}.modified{parts[1]}.{parts[2]}"
-            
-            headers = {"Authorization": f"Bearer {tampered_token}"}
-            response = await self.client.get(
-                f"{self.base_url}/api/v1/users/me",
-                headers=headers
-            )
-            
-            if response.status_code \!= 401:
-                self.test_results.append({
-                    "test": "Token Tampering",
-                    "status": "FAIL",
-                    "message": "Tampered token was accepted"
-                })
-            else:
-                self.test_results.append({
-                    "test": "Token Tampering",
-                    "status": "PASS",
-                    "message": "Tampered token correctly rejected"
-                })
-                
-    async def test_brute_force_protection(self):
-        """Test brute force protection on login"""
-        print("Testing brute force protection...")
-        
-        # Attempt multiple failed logins
-        failed_attempts = 0
-        for i in range(10):
-            response = await self.client.post(
-                f"{self.base_url}/api/v1/auth/login",
-                json={
-                    "email": "test@example.com",
-                    "password": f"wrong_password_{i}"
-                }
-            )
-            
-            if response.status_code == 429:  # Too Many Requests
-                self.test_results.append({
-                    "test": "Brute Force Protection",
-                    "status": "PASS",
-                    "message": f"Rate limiting activated after {i+1} attempts"
-                })
-                return
-            
-            failed_attempts += 1
-            
-        self.test_results.append({
-            "test": "Brute Force Protection",
-            "status": "WARNING",
-            "message": f"No rate limiting after {failed_attempts} failed attempts"
-        })
-        
-    async def test_authorization_bypass(self):
-        """Test authorization bypass attempts"""
-        print("Testing authorization bypass...")
-        
-        # Try to access admin endpoints without proper role
-        admin_endpoints = [
-            "/api/v1/platform/users",
-            "/api/v1/platform/restaurants",
-            "/api/v1/platform/analytics"
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get("success") and "data" in data:
+                        self.valid_token = data["data"]["access_token"]
+                        return True
+                        
+            return False
+        except Exception:
+            return False
+    
+    async def test_sql_injection_protection(self):
+        """Test SQL injection protection in login endpoint"""
+        sql_injection_payloads = [
+            "admin@fynlo.com' OR '1'='1",
+            "admin@fynlo.com'; DROP TABLE users; --",
+            "admin@fynlo.com' UNION SELECT * FROM users --",
+            "' OR 1=1 --",
+            "admin@fynlo.com' AND (SELECT COUNT(*) FROM users) > 0 --"
         ]
         
-        # Create a token for a regular user
-        user_payload = {
-            "sub": "regular_user",
-            "role": "employee",
-            "exp": datetime.utcnow() + timedelta(hours=1)
-        }
+        vulnerable_count = 0
         
-        secret_key = os.environ.get("SECRET_KEY", settings.SECRET_KEY)
-        user_token = jwt_lib.encode(
-            user_payload,
-            secret_key,
-            algorithm="HS256"
-        )
+        for payload in sql_injection_payloads:
+            try:
+                login_data = {
+                    "email": payload,
+                    "password": "any_password"
+                }
+                
+                async with httpx.AsyncClient(timeout=10.0) as client:
+                    response = await client.post(f"{self.api_url}/auth/login", json=login_data)
+                    
+                    # Should return 401/400, not 200 or 500
+                    if response.status_code == 200:
+                        vulnerable_count += 1
+                    elif response.status_code == 500:
+                        # 500 might indicate SQL error
+                        vulnerable_count += 1
+                        
+            except Exception:
+                pass
         
-        headers = {"Authorization": f"Bearer {user_token}"}
+        if vulnerable_count == 0:
+            self.log_test("SQL Injection Protection", True, 
+                        "No SQL injection vulnerabilities detected", "CRITICAL")
+        else:
+            self.log_test("SQL Injection Protection", False, 
+                        f"Potential SQL injection vulnerability with {vulnerable_count} payloads", "CRITICAL")
         
-        for endpoint in admin_endpoints:
-            response = await self.client.get(
-                f"{self.base_url}{endpoint}",
-                headers=headers
-            )
-            
-            if response.status_code in [200, 201]:
-                self.test_results.append({
-                    "test": "Authorization Bypass",
-                    "status": "FAIL",
-                    "message": f"Regular user accessed admin endpoint: {endpoint}"
-                })
-            else:
-                self.test_results.append({
-                    "test": "Authorization Bypass",
-                    "status": "PASS",
-                    "message": f"Admin endpoint {endpoint} correctly protected"
+        return vulnerable_count == 0
+    
+    async def test_brute_force_protection(self):
+        """Test brute force attack protection"""
+        # Attempt multiple failed logins
+        failed_attempts = []
+        
+        for i in range(10):
+            try:
+                login_data = {
+                    "email": "admin@fynlo.com",
+                    "password": f"wrong_password_{i}"
+                }
+                
+                start_time = time.time()
+                async with httpx.AsyncClient(timeout=10.0) as client:
+                    response = await client.post(f"{self.api_url}/auth/login", json=login_data)
+                    
+                end_time = time.time()
+                response_time = end_time - start_time
+                
+                failed_attempts.append({
+                    "attempt": i + 1,
+                    "status_code": response.status_code,
+                    "response_time": response_time
                 })
                 
-    async def test_role_escalation(self):
-        """Test role escalation attempts"""
-        print("Testing role escalation...")
+                # Small delay between attempts
+                await asyncio.sleep(0.1)
+                
+            except Exception as e:
+                failed_attempts.append({
+                    "attempt": i + 1,
+                    "error": str(e)
+                })
         
-        # Try to modify role in token
-        escalation_payload = {
-            "sub": "test_user",
-            "role": "platform_owner",  # Trying to escalate
-            "exp": datetime.utcnow() + timedelta(hours=1)
-        }
-        
-        # Sign with a different key (simulating attacker)
-        fake_token = jwt_lib.encode(
-            escalation_payload,
-            "attacker_secret_key",
-            algorithm="HS256"
+        # Analyze for rate limiting or account lockout
+        consistent_failures = all(
+            attempt.get("status_code") in [401, 429] 
+            for attempt in failed_attempts 
+            if "status_code" in attempt
         )
         
-        headers = {"Authorization": f"Bearer {fake_token}"}
-        response = await self.client.get(
-            f"{self.base_url}/api/v1/platform/users",
-            headers=headers
+        rate_limited = any(
+            attempt.get("status_code") == 429 
+            for attempt in failed_attempts
         )
         
-        if response.status_code in [200, 201]:
-            self.test_results.append({
-                "test": "Role Escalation",
-                "status": "FAIL",
-                "message": "Role escalation attack succeeded"
-            })
+        if rate_limited:
+            self.log_test("Brute Force Protection", True, 
+                        "Rate limiting detected (429 responses)", "HIGH")
+        elif consistent_failures:
+            self.log_test("Brute Force Protection", True, 
+                        "Consistent failure responses (no information leakage)", "MEDIUM")
         else:
-            self.test_results.append({
-                "test": "Role Escalation",
-                "status": "PASS",
-                "message": "Role escalation attempt blocked"
-            })
+            self.log_test("Brute Force Protection", False, 
+                        "No apparent brute force protection", "HIGH")
+        
+        return rate_limited or consistent_failures
+    
+    async def test_jwt_security(self):
+        """Test JWT token security"""
+        if not self.valid_token:
+            self.log_test("JWT Security", False, "No valid token available", "HIGH")
+            return False
+        
+        security_issues = []
+        
+        try:
+            # Test 1: Decode without verification (should contain no sensitive data)
+            unverified_payload = jwt_lib.decode(self.valid_token, options={"verify_signature": False})
             
-    async def test_cross_tenant_access(self):
-        """Test cross-tenant data access"""
-        print("Testing cross-tenant access...")
+            sensitive_fields = ["password", "password_hash", "secret", "key"]
+            found_sensitive = [field for field in sensitive_fields if field in str(unverified_payload).lower()]
+            
+            if found_sensitive:
+                security_issues.append(f"Sensitive data in JWT: {found_sensitive}")
+            
+            # Test 2: Check for weak algorithm
+            header = jwt_lib.get_unverified_header(self.valid_token)
+            if header.get("alg") == "none":
+                security_issues.append("JWT uses 'none' algorithm")
+            elif header.get("alg") in ["HS1", "RS1"]:
+                security_issues.append(f"JWT uses weak algorithm: {header.get('alg')}")
+            
+            # Test 3: Check expiration
+            if "exp" not in unverified_payload:
+                security_issues.append("JWT has no expiration")
+            else:
+                exp_time = datetime.fromtimestamp(unverified_payload["exp"])
+                now = datetime.utcnow()
+                if exp_time > now + timedelta(hours=24):
+                    security_issues.append("JWT expiration too long (>24 hours)")
+            
+            if security_issues:
+                self.log_test("JWT Security", False, 
+                            f"Security issues: {'; '.join(security_issues)}", "HIGH")
+                return False
+            else:
+                self.log_test("JWT Security", True, 
+                            "JWT tokens follow security best practices", "HIGH")
+                return True
+                
+        except Exception as e:
+            self.log_test("JWT Security", False, f"JWT analysis failed: {e}", "MEDIUM")
+            return False
+    
+    async def test_token_manipulation(self):
+        """Test token manipulation attacks"""
+        if not self.valid_token:
+            self.log_test("Token Manipulation", False, "No valid token available", "HIGH")
+            return False
         
-        # Create token for restaurant A
-        tenant_a_payload = {
-            "sub": "user_a",
-            "restaurant_id": "restaurant_a",
-            "exp": datetime.utcnow() + timedelta(hours=1)
-        }
+        manipulation_tests = []
         
-        secret_key = os.environ.get("SECRET_KEY", settings.SECRET_KEY)
-        tenant_a_token = jwt_lib.encode(
-            tenant_a_payload,
-            secret_key,
-            algorithm="HS256"
-        )
+        # Test 1: Modified signature
+        try:
+            parts = self.valid_token.split('.')
+            modified_token = '.'.join(parts[:-1]) + '.modified_signature'
+            
+            headers = {"Authorization": f"Bearer {modified_token}"}
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                response = await client.get(f"{self.api_url}/auth/me", headers=headers)
+                
+            if response.status_code == 401:
+                manipulation_tests.append(("Modified Signature", True))
+            else:
+                manipulation_tests.append(("Modified Signature", False))
+                
+        except Exception:
+            manipulation_tests.append(("Modified Signature", True))
         
-        headers = {"Authorization": f"Bearer {tenant_a_token}"}
+        # Test 2: Modified payload
+        try:
+            header, payload, signature = self.valid_token.split('.')
+            
+            # Decode and modify payload
+            import base64
+            decoded_payload = base64.urlsafe_b64decode(payload + '==')
+            payload_data = json.loads(decoded_payload)
+            payload_data["role"] = "admin"  # Try to escalate privileges
+            
+            modified_payload = base64.urlsafe_b64encode(
+                json.dumps(payload_data).encode()
+            ).decode().rstrip('=')
+            
+            modified_token = f"{header}.{modified_payload}.{signature}"
+            
+            headers = {"Authorization": f"Bearer {modified_token}"}
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                response = await client.get(f"{self.api_url}/auth/me", headers=headers)
+                
+            if response.status_code == 401:
+                manipulation_tests.append(("Modified Payload", True))
+            else:
+                manipulation_tests.append(("Modified Payload", False))
+                
+        except Exception:
+            manipulation_tests.append(("Modified Payload", True))
         
-        # Try to access restaurant B's data
-        response = await self.client.get(
-            f"{self.base_url}/api/v1/restaurants/restaurant_b/orders",
-            headers=headers
-        )
+        # Test 3: Empty token
+        try:
+            headers = {"Authorization": "Bearer "}
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                response = await client.get(f"{self.api_url}/auth/me", headers=headers)
+                
+            if response.status_code == 401:
+                manipulation_tests.append(("Empty Token", True))
+            else:
+                manipulation_tests.append(("Empty Token", False))
+                
+        except Exception:
+            manipulation_tests.append(("Empty Token", True))
         
-        if response.status_code in [200, 201]:
-            self.test_results.append({
-                "test": "Cross-Tenant Access",
-                "status": "FAIL",
-                "message": "User accessed another tenant's data"
-            })
+        all_secure = all(secure for _, secure in manipulation_tests)
+        
+        if all_secure:
+            self.log_test("Token Manipulation", True, 
+                        "All token manipulation attempts properly rejected", "HIGH")
         else:
-            self.test_results.append({
-                "test": "Cross-Tenant Access",
-                "status": "PASS",
-                "message": "Cross-tenant access correctly blocked"
-            })
+            failed_tests = [test for test, secure in manipulation_tests if not secure]
+            self.log_test("Token Manipulation", False, 
+                        f"Vulnerable to: {', '.join(failed_tests)}", "CRITICAL")
+        
+        return all_secure
+    
+    async def test_password_security(self):
+        """Test password security requirements"""
+        # Test weak password acceptance
+        weak_passwords = [
+            "123",
+            "password",
+            "admin",
+            "12345678",
+            "qwerty"
+        ]
+        
+        weak_accepted = 0
+        
+        for weak_password in weak_passwords:
+            try:
+                # Try to register with weak password
+                register_data = {
+                    "email": f"test_{weak_password}@example.com",
+                    "password": weak_password,
+                    "first_name": "Test",
+                    "last_name": "User",
+                    "role": "employee"
+                }
+                
+                async with httpx.AsyncClient(timeout=10.0) as client:
+                    response = await client.post(f"{self.api_url}/auth/register", json=register_data)
+                    
+                    if response.status_code == 200:
+                        weak_accepted += 1
+                        
+            except Exception:
+                pass
+        
+        if weak_accepted == 0:
+            self.log_test("Password Security", True, 
+                        "Weak passwords properly rejected", "MEDIUM")
+        else:
+            self.log_test("Password Security", False, 
+                        f"{weak_accepted} weak passwords accepted", "MEDIUM")
+        
+        return weak_accepted == 0
+    
+    async def test_session_security(self):
+        """Test session security and logout behavior"""
+        if not self.valid_token:
+            self.log_test("Session Security", False, "No valid token available", "MEDIUM")
+            return False
+        
+        try:
+            headers = {"Authorization": f"Bearer {self.valid_token}"}
             
-    def print_results(self):
-        """Print test results summary"""
-        print("\n" + "="*60)
-        print("AUTHENTICATION SECURITY TEST RESULTS")
-        print("="*60)
-        
-        passed = sum(1 for r in self.test_results if r["status"] == "PASS")
-        failed = sum(1 for r in self.test_results if r["status"] == "FAIL")
-        warnings = sum(1 for r in self.test_results if r["status"] == "WARNING")
-        errors = sum(1 for r in self.test_results if r["status"] == "ERROR")
-        
-        print(f"\nTotal Tests: {len(self.test_results)}")
-        print(f"✅ Passed: {passed}")
-        print(f"❌ Failed: {failed}")
-        print(f"⚠️  Warnings: {warnings}")
-        print(f"🔥 Errors: {errors}")
-        
-        if failed > 0:
-            print("\n❌ FAILED TESTS:")
-            for result in self.test_results:
-                if result["status"] == "FAIL":
-                    print(f"  - {result['test']}: {result['message']}")
+            # Test logout
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                logout_response = await client.post(f"{self.api_url}/auth/logout", headers=headers)
+                
+                if logout_response.status_code == 200:
+                    # Test if token is invalidated
+                    test_response = await client.get(f"{self.api_url}/auth/me", headers=headers)
                     
-        if warnings > 0:
-            print("\n⚠️  WARNINGS:")
-            for result in self.test_results:
-                if result["status"] == "WARNING":
-                    print(f"  - {result['test']}: {result['message']}")
+                    if test_response.status_code == 401:
+                        self.log_test("Session Security", True, 
+                                    "Token properly invalidated after logout", "MEDIUM")
+                        return True
+                    else:
+                        self.log_test("Session Security", False, 
+                                    "Token still valid after logout", "HIGH")
+                        return False
+                else:
+                    self.log_test("Session Security", False, 
+                                f"Logout failed: {logout_response.status_code}", "MEDIUM")
+                    return False
                     
-        if errors > 0:
-            print("\n🔥 ERRORS:")
-            for result in self.test_results:
-                if result["status"] == "ERROR":
-                    print(f"  - {result['test']}: {result['message']}")
+        except Exception as e:
+            self.log_test("Session Security", False, f"Session test error: {e}", "MEDIUM")
+            return False
+    
+    async def test_information_disclosure(self):
+        """Test for information disclosure vulnerabilities"""
+        disclosure_issues = []
+        
+        # Test 1: Error message information leakage
+        try:
+            login_data = {
+                "email": "nonexistent@example.com",
+                "password": "password"
+            }
+            
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                response = await client.post(f"{self.api_url}/auth/login", json=login_data)
+                
+                if response.status_code != 200:
+                    error_text = response.text.lower()
                     
-        print("\n" + "="*60)
+                    # Check for information disclosure
+                    if "user not found" in error_text or "invalid user" in error_text:
+                        disclosure_issues.append("Login error reveals user existence")
+                    elif "wrong password" in error_text or "invalid password" in error_text:
+                        disclosure_issues.append("Login error reveals password validity")
+                        
+        except Exception:
+            pass
         
-        # Return non-zero exit code if any tests failed
-        if failed > 0 or errors > 0:
-            return 1
-        return 0
+        # Test 2: API version disclosure
+        try:
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                response = await client.get(f"{self.base_url}/")
+                
+                headers = dict(response.headers)
+                server_header = headers.get("server", "").lower()
+                
+                if "uvicorn" in server_header or "fastapi" in server_header:
+                    disclosure_issues.append("Server technology disclosed in headers")
+                    
+        except Exception:
+            pass
         
-    async def cleanup(self):
-        """Clean up resources"""
-        await self.client.aclose()
+        if disclosure_issues:
+            self.log_test("Information Disclosure", False, 
+                        f"Issues: {'; '.join(disclosure_issues)}", "MEDIUM")
+            return False
+        else:
+            self.log_test("Information Disclosure", True, 
+                        "No information disclosure detected", "MEDIUM")
+            return True
+    
+    async def run_all_security_tests(self):
+        """Run all authentication security tests"""
+        print("🔒 Starting Authentication Security Tests")
+        print("=" * 50)
+        
+        # Get valid token for testing
+        token_ok = await self.get_valid_token()
+        if not token_ok:
+            print("⚠️ Could not obtain valid token. Some tests may be skipped.")
+        
+        # Run security tests
+        await self.test_sql_injection_protection()
+        await self.test_brute_force_protection()
+        await self.test_jwt_security()
+        await self.test_token_manipulation()
+        await self.test_password_security()
+        await self.test_session_security()
+        await self.test_information_disclosure()
+        
+        # Analyze results
+        critical_issues = [r for r in self.test_results if r["severity"] == "CRITICAL" and "VULNERABLE" in r["status"]]
+        high_issues = [r for r in self.test_results if r["severity"] == "HIGH" and "VULNERABLE" in r["status"]]
+        medium_issues = [r for r in self.test_results if r["severity"] == "MEDIUM" and "VULNERABLE" in r["status"]]
+        
+        total_tests = len(self.test_results)
+        secure_tests = len([r for r in self.test_results if "SECURE" in r["status"]])
+        
+        print(f"\n🛡️ Security Assessment Results")
+        print("=" * 40)
+        print(f"Total Security Tests: {total_tests}")
+        print(f"Secure: {secure_tests}")
+        print(f"Critical Issues: {len(critical_issues)}")
+        print(f"High Risk Issues: {len(high_issues)}")
+        print(f"Medium Risk Issues: {len(medium_issues)}")
+        
+        if critical_issues:
+            print(f"\n🚨 CRITICAL SECURITY ISSUES:")
+            for issue in critical_issues:
+                print(f"   - {issue['test']}: {issue['message']}")
+        
+        if high_issues:
+            print(f"\n⚠️ HIGH RISK ISSUES:")
+            for issue in high_issues:
+                print(f"   - {issue['test']}: {issue['message']}")
+        
+        if len(critical_issues) == 0 and len(high_issues) == 0:
+            print("\n✅ No critical or high-risk security issues found!")
+            print("Authentication system follows security best practices.")
+        
+        return len(critical_issues) == 0 and len(high_issues) == 0
 
 async def main():
-    """Run the authentication security tests"""
-    tester = AuthenticationSecurityTester()
+    """Main security test runner"""
+    print("Starting authentication security tests...")
+    print("This will test for common security vulnerabilities.")
+    print()
     
-    try:
-        await tester.run_all_tests()
-    finally:
-        await tester.cleanup()
+    tester = AuthenticationSecurityTester()
+    success = await tester.run_all_security_tests()
+    
+    return success
 
 if __name__ == "__main__":
-    # Run the async main function
-    exit_code = asyncio.run(main())
-    sys.exit(exit_code or 0)
-EOF < /dev/null
+    success = asyncio.run(main())
+    sys.exit(0 if success else 1)

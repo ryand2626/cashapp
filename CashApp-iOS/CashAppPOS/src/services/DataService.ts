@@ -2,11 +2,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import API_CONFIG from '../config/api';
-import { logger } from '../utils/logger';
 // TODO: Unused import - import { AUTH_CONFIG } from '../config/auth.config';
 import { envBool, IS_DEV } from '../env';
 // TODO: Unused import - import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/useAuthStore';
+import { logger } from '../utils/logger';
 import tokenManager from '../utils/tokenManager';
 
 import APITestingService from './APITestingService';
@@ -112,7 +112,7 @@ class DataService {
   private async testAPIEndpoint(
     endpoint: string,
     method: string = 'GET',
-data?: unknown
+    data?: unknown
   ): Promise<void> {
     if (this.featureFlags.TEST_API_MODE) {
       try {
@@ -168,7 +168,7 @@ data?: unknown
           `Backend status changed: ${this.isBackendAvailable ? 'Available' : 'Unavailable'}`
         );
       }
-} catch (_error) {
+    } catch (_error) {
       this.isBackendAvailable = false;
       logger.info('Backend not available, using mock data');
 
@@ -340,7 +340,7 @@ data?: unknown
       sort_order?: number;
       is_active?: boolean;
     }>
-): Promise<unknown> {
+  ): Promise<unknown> {
     if (this.featureFlags.USE_REAL_API && this.isBackendAvailable) {
       try {
         const result = await this.db.updateCategory(categoryId, categoryData);
@@ -420,12 +420,12 @@ data?: unknown
       sku?: string;
       prep_time?: number;
       dietary_info?: string[];
-modifiers?: unknown[];
+      modifiers?: unknown[];
       stock_tracking?: boolean;
       stock_quantity?: number;
       is_active?: boolean;
     }>
-): Promise<unknown> {
+  ): Promise<unknown> {
     if (this.featureFlags.USE_REAL_API && this.isBackendAvailable) {
       try {
         return await this.db.updateProduct(productId, productData);

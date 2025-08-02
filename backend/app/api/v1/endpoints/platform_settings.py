@@ -4,7 +4,7 @@ Admin-only endpoints for managing platform-wide configurations
 """
 from datetime import datetime # Added missing import
 from typing import Dict, Any, Optional, List
-from fastapi import APIRouter, Depends, status, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
 import logging # Added for logging in new endpoints
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
@@ -55,9 +55,9 @@ def require_admin_user(current_user: User = Depends(get_current_user)) -> User:
     # TODO: Implement proper role-based access control
     # For now, check if user has admin role or specific permissions
     if not hasattr(current_user, 'is_admin') or not current_user.is_admin:
-        raise FynloException(
-            message="Admin privileges required for platform settings",
-            status_code=status.HTTP_403_FORBIDDEN
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin privileges required for platform settings"
         )
     return current_user
 
@@ -156,7 +156,7 @@ async def get_platform_setting(
             message=f"Retrieved platform setting '{config_key}'"
         )
         
-    except FynloException:
+    except HTTPException:
         raise
     except Exception as e:
         raise FynloException(message=str(e))
@@ -198,7 +198,7 @@ async def update_platform_setting(
         
     except ValueError as e:
         raise ValidationException(message=str(e))
-    except FynloException:
+    except HTTPException:
         raise
     except Exception as e:
         raise FynloException(message=str(e))
@@ -343,7 +343,7 @@ async def update_feature_flag(
             message=f"Feature flag '{feature_key}' updated successfully"
         )
         
-    except FynloException:
+    except HTTPException:
         raise
     except Exception as e:
         raise FynloException(message=str(e))

@@ -4,8 +4,6 @@ Seed Chucho Restaurant Menu Data
 Seeds the Chucho restaurant menu data into the production database
 """
 
-
-"""
 import sys
 import os
 import asyncio

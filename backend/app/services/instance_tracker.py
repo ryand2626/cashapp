@@ -25,6 +25,7 @@ class InstanceTracker:
     Each instance registers itself with Redis and maintains a heartbeat.
     Stale instances are automatically cleaned up based on TTL.
     """
+    
     def __init__(self, redis_client: RedisClient):
         self.redis = redis_client
         self.instance_id = self._generate_instance_id()

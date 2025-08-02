@@ -152,7 +152,7 @@ class PlatformPaymentService {
       );
 
       const allMethods = await this.getPaymentMethodsWithFees(amount, restaurantId);
-const _currentMethod = allMethods.find((m) => m.id === paymentMethod);
+      const _currentMethod = allMethods.find((m) => m.id === paymentMethod);
       const lowestFee = Math.min(...allMethods.map((m) => m.effectiveFee?.effective_fee || 0));
 
       return {
@@ -287,7 +287,7 @@ const _currentMethod = allMethods.find((m) => m.id === paymentMethod);
    * Generate short fee description for UI
    */
   private generateShortFeeDescription(feeCalculation: FeeCalculation): string {
-const { effective_fee, _currency, fee_percentage } = feeCalculation;
+    const { effective_fee, _currency, fee_percentage } = feeCalculation;
 
     if (effective_fee === 0) {
       return 'No fee';

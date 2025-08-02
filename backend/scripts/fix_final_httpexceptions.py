@@ -4,8 +4,6 @@ Fix final remaining HTTPExceptions in core modules.
 This script targets the last HTTPExceptions that need to be migrated to FynloException.
 """
 
-
-"""
 import os
 import re
 from typing import List, Tuple

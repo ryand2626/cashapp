@@ -53,7 +53,7 @@ const mockOrder = {
 
 const OrderDetailsScreen: React.FC = () => {
   const navigation = useNavigation();
-  const _route = useRoute();
+  const route = useRoute();
   // const { orderId } = route.params as { orderId: number };
 
   const statusColors = {
@@ -78,7 +78,7 @@ const OrderDetailsScreen: React.FC = () => {
     ]);
   };
 
-  const OrderItemCard = ({ item }: { item: unknown }) => (
+  const OrderItemCard = ({ item }: { item: any }) => (
     <View style={styles.orderItem}>
       <Text style={styles.itemEmoji}>{item.emoji}</Text>
       <View style={styles.itemDetails}>

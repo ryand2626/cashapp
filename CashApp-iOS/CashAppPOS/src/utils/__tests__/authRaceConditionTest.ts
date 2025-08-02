@@ -117,7 +117,7 @@ describe('Authentication Race Condition Tests', () => {
       };
 
       // Spy on console.log to check detection
-const _consoleSpy = jest.spyOn(console, 'log');
+      const _consoleSpy = jest.spyOn(console, 'log');
 
       // Trigger close event handler
       (webSocketService as any).connectionStartTime = Date.now() - 1000;

@@ -3,8 +3,6 @@ Comprehensive unit tests for the security module.
 Tests environment filtering, input validation, token encryption, and webhook security.
 """
 
-
-"""
 import pytest
 import os
 from unittest.mock import patch, MagicMock
@@ -45,7 +43,7 @@ class TestPasswordHashing:
     
     def test_hash_password(self):
         """Test password hashing creates valid hash."""
-        password = os.environ.get("TEST_PASSWORD", "test_password_hash_123")
+        password = "test_password123"
         hashed = get_password_hash(password)
         
         assert hashed != password
@@ -54,21 +52,21 @@ class TestPasswordHashing:
     
     def test_verify_correct_password(self):
         """Test verifying correct password."""
-        password = os.environ.get("TEST_PASSWORD", "test_password_verify_123")
+        password = "test_password123"
         hashed = get_password_hash(password)
         
         assert verify_password(password, hashed) is True
     
     def test_verify_incorrect_password(self):
         """Test verifying incorrect password."""
-        password = os.environ.get("TEST_PASSWORD", "test_password_incorrect_123")
+        password = "test_password123"
         hashed = get_password_hash(password)
         
         assert verify_password("wrong_password", hashed) is False
     
     def test_hash_uniqueness(self):
         """Test that same password creates different hashes."""
-        password = os.environ.get("TEST_PASSWORD", "test_password_unique_123")
+        password = "test_password123"
         hash1 = get_password_hash(password)
         hash2 = get_password_hash(password)
         
@@ -174,8 +172,7 @@ class TestSafeEnvironmentFilter:
     
     def test_sanitize_long_tokens(self):
         """Test sanitization of long token-like strings."""
-        import uuid
-        long_token = f"test_token_{uuid.uuid4().hex}"  # Dynamic token generation
+        long_token = "a" * 50
         data = {"token": long_token}
         
         sanitized = SafeEnvironmentFilter.sanitize_log_data(data)
@@ -290,9 +287,7 @@ class TestTokenEncryption:
     def test_encrypt_decrypt_token(self):
         """Test token encryption and decryption."""
         token_enc = TokenEncryption()
-        # Use a dynamic test token for testing encryption
-        import uuid
-        original_token = f"test_api_token_{uuid.uuid4().hex[:8]}"
+        original_token = "my_secret_api_token_12345"
         
         # Encrypt
         encrypted = token_enc.encrypt_token(original_token)
@@ -314,9 +309,7 @@ class TestTokenEncryption:
         master_key = "b" * 32
         token_enc = TokenEncryption(master_key=master_key)
         
-        # Generate a dynamic test token
-        import uuid
-        token = f"test_token_{uuid.uuid4().hex[:8]}"
+        token = "test_token"
         encrypted = token_enc.encrypt_token(token)
         decrypted = token_enc.decrypt_token(encrypted)
         
@@ -344,7 +337,7 @@ class TestWebhookSecurity:
     def test_verify_signature_sha256(self):
         """Test SHA256 signature verification."""
         payload = b'{"event": "test"}'
-        secret = os.environ.get("TEST_WEBHOOK_SECRET", "dynamic_webhook_secret_123")
+        secret = "webhook_secret_123"
         
         # Generate valid signature
         import hmac
@@ -368,7 +361,7 @@ class TestWebhookSecurity:
     def test_verify_signature_with_prefix(self):
         """Test signature verification with prefix."""
         payload = b'{"event": "test"}'
-        secret = os.environ.get("TEST_WEBHOOK_SECRET_V2", "dynamic_webhook_secret")
+        secret = "webhook_secret"
         
         import hmac
         import hashlib
@@ -387,7 +380,7 @@ class TestWebhookSecurity:
     def test_verify_signature_with_timestamp(self):
         """Test signature verification with timestamp."""
         payload = b'{"event": "test"}'
-        secret = os.environ.get("TEST_WEBHOOK_SECRET_V2", "dynamic_webhook_secret")
+        secret = "webhook_secret"
         timestamp = int(time.time())
         
         # Generate signature with timestamp
@@ -408,7 +401,7 @@ class TestWebhookSecurity:
     def test_verify_signature_expired_timestamp(self):
         """Test signature verification with expired timestamp."""
         payload = b'{"event": "test"}'
-        secret = os.environ.get("TEST_WEBHOOK_SECRET_V2", "dynamic_webhook_secret")
+        secret = "webhook_secret"
         old_timestamp = int(time.time()) - 400  # 400 seconds ago
         
         import hmac

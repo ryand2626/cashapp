@@ -113,7 +113,7 @@ const EmployeeScheduleScreen: React.FC = () => {
       // Assuming getWeekSchedule takes weekStart and possibly employee list or fetches all
       const scheduleData = await dataService.getWeekSchedule(weekStart, employeeData || []);
       setWeekSchedule(scheduleData || { weekStart, shifts: [] });
-} catch (e: unknown) {
+    } catch (e: unknown) {
       setError(e.message || 'Failed to load schedule data.');
       setEmployees([]);
       setWeekSchedule({ weekStart: getWeekStart(currentWeek), shifts: [] });

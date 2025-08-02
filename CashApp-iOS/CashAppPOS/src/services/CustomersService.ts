@@ -35,7 +35,7 @@ class CustomersService {
       this.baseUrl = cfg?.backend?.baseUrl ?? null;
       this.apiKey = cfg?.backend?.apiKey ?? null;
     } catch (err) {
-      logger.warn('CustomersService: failed loading config', err);
+      console.warn('CustomersService: failed loading config', err);
     }
   }
 
@@ -53,7 +53,7 @@ class CustomersService {
         body: JSON.stringify(payload),
       });
     } catch (err) {
-      logger.error('CustomersService.saveCustomer error', err);
+      console.error('CustomersService.saveCustomer error', err);
     }
   }
 
@@ -71,7 +71,7 @@ class CustomersService {
       const json = await res.json();
       return json.items ?? [];
     } catch (err) {
-      logger.error('CustomersService.search error', err);
+      console.error('CustomersService.search error', err);
       return [];
     }
   }

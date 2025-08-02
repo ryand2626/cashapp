@@ -2,8 +2,6 @@
 Tests for enhanced WebSocket functionality including heartbeat and reconnection
 """
 
-
-"""
 import asyncio
 import json
 import pytest

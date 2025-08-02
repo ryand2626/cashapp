@@ -16,7 +16,7 @@
     {
       "id": 1,
       "name": "Nachos",
-      "price": 5.0,
+      "price": 5.00,
       "category": "Snacks",
       "emoji": "🧀",
       "available": true,
@@ -25,7 +25,7 @@
     {
       "id": 2,
       "name": "Quesadillas",
-      "price": 5.5,
+      "price": 5.50,
       "category": "Snacks",
       "emoji": "🫓",
       "available": true,
@@ -34,7 +34,7 @@
     {
       "id": 3,
       "name": "Chorizo Quesadilla",
-      "price": 5.5,
+      "price": 5.50,
       "category": "Snacks",
       "emoji": "🌶️",
       "available": true,
@@ -43,7 +43,7 @@
     {
       "id": 4,
       "name": "Chicken Quesadilla",
-      "price": 5.5,
+      "price": 5.50,
       "category": "Snacks",
       "emoji": "🐔",
       "available": true,
@@ -52,7 +52,7 @@
     {
       "id": 5,
       "name": "Tostada",
-      "price": 6.5,
+      "price": 6.50,
       "category": "Snacks",
       "emoji": "🥙",
       "available": true,
@@ -61,7 +61,7 @@
     {
       "id": 6,
       "name": "Carnitas",
-      "price": 3.5,
+      "price": 3.50,
       "category": "Tacos",
       "emoji": "🌮",
       "available": true,
@@ -70,7 +70,7 @@
     {
       "id": 7,
       "name": "Cochinita",
-      "price": 3.5,
+      "price": 3.50,
       "category": "Tacos",
       "emoji": "🌮",
       "available": true,
@@ -79,7 +79,7 @@
     {
       "id": 8,
       "name": "Barbacoa de Res",
-      "price": 3.5,
+      "price": 3.50,
       "category": "Tacos",
       "emoji": "🌮",
       "available": true,
@@ -88,7 +88,7 @@
     {
       "id": 9,
       "name": "Chorizo",
-      "price": 3.5,
+      "price": 3.50,
       "category": "Tacos",
       "emoji": "🌮",
       "available": true,
@@ -97,7 +97,7 @@
     {
       "id": 10,
       "name": "Rellena",
-      "price": 3.5,
+      "price": 3.50,
       "category": "Tacos",
       "emoji": "🌮",
       "available": true,
@@ -106,7 +106,7 @@
     {
       "id": 11,
       "name": "Chicken Fajita",
-      "price": 3.5,
+      "price": 3.50,
       "category": "Tacos",
       "emoji": "🌮",
       "available": true,
@@ -115,7 +115,7 @@
     {
       "id": 12,
       "name": "Haggis",
-      "price": 3.5,
+      "price": 3.50,
       "category": "Tacos",
       "emoji": "🌮",
       "available": true,
@@ -124,7 +124,7 @@
     {
       "id": 13,
       "name": "Pescado",
-      "price": 3.5,
+      "price": 3.50,
       "category": "Tacos",
       "emoji": "🌮",
       "available": true,
@@ -133,7 +133,7 @@
     {
       "id": 14,
       "name": "Dorados",
-      "price": 3.5,
+      "price": 3.50,
       "category": "Tacos",
       "emoji": "🌮",
       "available": true,
@@ -142,7 +142,7 @@
     {
       "id": 15,
       "name": "Dorados Papa",
-      "price": 3.5,
+      "price": 3.50,
       "category": "Tacos",
       "emoji": "🌮",
       "available": true,
@@ -151,7 +151,7 @@
     {
       "id": 16,
       "name": "Nopal",
-      "price": 3.5,
+      "price": 3.50,
       "category": "Tacos",
       "emoji": "🌮",
       "available": true,
@@ -160,7 +160,7 @@
     {
       "id": 17,
       "name": "Frijol",
-      "price": 3.5,
+      "price": 3.50,
       "category": "Tacos",
       "emoji": "🌮",
       "available": true,
@@ -169,7 +169,7 @@
     {
       "id": 18,
       "name": "Verde",
-      "price": 3.5,
+      "price": 3.50,
       "category": "Tacos",
       "emoji": "🌮",
       "available": true,
@@ -178,7 +178,7 @@
     {
       "id": 19,
       "name": "Fajita",
-      "price": 3.5,
+      "price": 3.50,
       "category": "Tacos",
       "emoji": "🌮",
       "available": true,
@@ -187,7 +187,7 @@
     {
       "id": 20,
       "name": "Carne Asada",
-      "price": 4.5,
+      "price": 4.50,
       "category": "Special Tacos",
       "emoji": "⭐",
       "available": true,
@@ -196,7 +196,7 @@
     {
       "id": 21,
       "name": "Camaron",
-      "price": 4.5,
+      "price": 4.50,
       "category": "Special Tacos",
       "emoji": "🦐",
       "available": true,
@@ -205,7 +205,7 @@
     {
       "id": 22,
       "name": "Pulpos",
-      "price": 4.5,
+      "price": 4.50,
       "category": "Special Tacos",
       "emoji": "🐙",
       "available": true,
@@ -214,7 +214,7 @@
     {
       "id": 23,
       "name": "Regular Burrito",
-      "price": 8.0,
+      "price": 8.00,
       "category": "Burritos",
       "emoji": "🌯",
       "available": true,
@@ -223,7 +223,7 @@
     {
       "id": 24,
       "name": "Special Burrito",
-      "price": 10.0,
+      "price": 10.00,
       "category": "Burritos",
       "emoji": "🌯",
       "available": true,
@@ -232,7 +232,7 @@
     {
       "id": 25,
       "name": "Add Mozzarella",
-      "price": 1.0,
+      "price": 1.00,
       "category": "Burritos",
       "emoji": "🧀",
       "available": true,
@@ -241,7 +241,7 @@
     {
       "id": 26,
       "name": "Skinny Fries",
-      "price": 3.5,
+      "price": 3.50,
       "category": "Sides",
       "emoji": "🍟",
       "available": true,
@@ -250,7 +250,7 @@
     {
       "id": 27,
       "name": "Pico de Gallo",
-      "price": 0.0,
+      "price": 0.00,
       "category": "Sides",
       "emoji": "🍅",
       "available": true,
@@ -259,7 +259,7 @@
     {
       "id": 28,
       "name": "Green Chili",
-      "price": 0.0,
+      "price": 0.00,
       "category": "Sides",
       "emoji": "🌶️",
       "available": true,
@@ -268,7 +268,7 @@
     {
       "id": 29,
       "name": "Pineapple Habanero",
-      "price": 0.0,
+      "price": 0.00,
       "category": "Sides",
       "emoji": "🍍",
       "available": true,
@@ -277,7 +277,7 @@
     {
       "id": 30,
       "name": "Scotch Bonnet",
-      "price": 0.0,
+      "price": 0.00,
       "category": "Sides",
       "emoji": "🔥",
       "available": true,
@@ -304,7 +304,7 @@
     {
       "id": 33,
       "name": "Corona",
-      "price": 3.8,
+      "price": 3.80,
       "category": "Drinks",
       "emoji": "🍺",
       "available": true,
@@ -313,7 +313,7 @@
     {
       "id": 34,
       "name": "Modelo",
-      "price": 4.0,
+      "price": 4.00,
       "category": "Drinks",
       "emoji": "🍺",
       "available": true,
@@ -322,7 +322,7 @@
     {
       "id": 35,
       "name": "Pacifico",
-      "price": 4.0,
+      "price": 4.00,
       "category": "Drinks",
       "emoji": "🍺",
       "available": true,
@@ -331,7 +331,7 @@
     {
       "id": 36,
       "name": "Dos Equis",
-      "price": 4.0,
+      "price": 4.00,
       "category": "Drinks",
       "emoji": "🍺",
       "available": true,

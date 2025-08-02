@@ -279,7 +279,7 @@ class EnhancedTokenManager {
     this.listeners.get(event)?.delete(listener);
   }
 
-private emit(event: string, ...args: unknown[]): void {
+  private emit(event: string, ...args: unknown[]): void {
     this.listeners.get(event)?.forEach((listener) => {
       try {
         listener(...args);

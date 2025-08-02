@@ -2,8 +2,6 @@
 Test RLS Session Context Management
 """
 
-
-"""
 import pytest
 from unittest.mock import MagicMock, patch, call
 from sqlalchemy.orm import Session

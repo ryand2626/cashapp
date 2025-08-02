@@ -3,14 +3,11 @@ Minimal FastAPI server to get essential endpoints working
 This bypasses complex payment provider imports and focuses on core data endpoints
 """
 
-
-"""
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Dict, Any
 import json
 from datetime import datetime
-from app.core.exceptions import ResourceNotFoundException
 
 app = FastAPI(
     title="Fynlo POS API - Minimal",
@@ -221,7 +218,7 @@ def get_employees():
 def get_employee(employee_id: int):
     employee = next((emp for emp in MOCK_EMPLOYEES if emp["id"] == employee_id), None)
     if not employee:
-        raise ResourceNotFoundException(resource="Employee", resource_id=str(employee_id))
+        raise HTTPException(status_code=404, detail="Employee not found")
     return success_response(employee, "Employee retrieved successfully")
 
 # Inventory endpoints

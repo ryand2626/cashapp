@@ -34,7 +34,7 @@ interface BankDetails {
 
 const BankDetailsScreen: React.FC = () => {
   const navigation = useNavigation();
-const { _user } = useAuth();
+  const { _user } = useAuth();
 
   const [bankDetails, setBankDetails] = useState<BankDetails>({
     accountHolderName: '',

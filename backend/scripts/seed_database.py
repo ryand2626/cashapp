@@ -4,8 +4,6 @@ Master Database Seeding Script for Fynlo POS
 Creates comprehensive production-like data for testing and development
 """
 
-
-"""
 import asyncio
 import sys
 import os

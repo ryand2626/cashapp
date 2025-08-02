@@ -22,22 +22,12 @@ import { useNavigation } from '@react-navigation/native';
 import { Swipeable } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import ErrorTrackingService from '../../services/ErrorTrackingService';
-import { logger } from '../../utils/logger';
-import {
-  validatePrice,
-  calculatePercentageFee,
-  validateCartCalculation,
-  formatPrice,
-} from '../../utils/priceValidation';
+import CartIcon from '../../components/cart/CartIcon';
+import { QuantityPill } from '../../components/inputs';
+import SimpleTextInput from '../../components/inputs/SimpleTextInput';
+import HeaderWithBackButton from '../../components/navigation/HeaderWithBackButton';
 import SumUpPaymentComponent from '../../components/payment/SumUpPaymentComponent';
 import SumUpTestComponent from '../../components/payment/SumUpTestComponent';
-import SumUpCompatibilityService from '../../services/SumUpCompatibilityService';
-import SharedDataStore from '../../services/SharedDataStore';
-import SimpleTextInput from '../../components/inputs/SimpleTextInput';
-import { QuantityPill } from '../../components/inputs';
-import CartIcon from '../../components/cart/CartIcon';
-import HeaderWithBackButton from '../../components/navigation/HeaderWithBackButton';
 import CategorySearchBubble from '../../components/search/CategorySearchBubble';
 import { useTheme, useThemedStyles } from '../../design-system/ThemeProvider';
 import { IS_DEV } from '../../env';
@@ -45,10 +35,20 @@ import { useRestaurantDisplayName } from '../../hooks/useRestaurantConfig';
 import CustomersService from '../../services/CustomersService';
 import DatabaseService from '../../services/DatabaseService';
 import DataService from '../../services/DataService';
+import ErrorTrackingService from '../../services/ErrorTrackingService';
 import PlatformService from '../../services/PlatformService';
+import SharedDataStore from '../../services/SharedDataStore';
+import SumUpCompatibilityService from '../../services/SumUpCompatibilityService';
 import useAppStore from '../../store/useAppStore';
 import useSettingsStore from '../../store/useSettingsStore';
 import useUIStore from '../../store/useUIStore';
+import { logger } from '../../utils/logger';
+import {
+  validatePrice,
+  calculatePercentageFee,
+  validateCartCalculation,
+  formatPrice,
+} from '../../utils/priceValidation';
 
 import type { MenuItem, OrderItem } from '../../types';
 
@@ -69,7 +69,7 @@ const ExportedMenuItemCard = ({
   handleUpdateQuantity,
 }: {
   item: MenuItem;
-theme: unknown;
+  theme: unknown;
   styles: unknown;
   cart: OrderItem[];
   handleAddToCart: (item: MenuItem) => void;
@@ -144,7 +144,7 @@ const POSScreen: React.FC = () => {
   const [showSumUpTest, setShowSumUpTest] = useState(false);
   const [serviceChargeDebugInfo, setServiceChargeDebugInfo] = useState('');
   const [searchQuery, setSearchQuery] = useState(''); // State for search query
-  
+
   // Dynamic styles that depend on state
   const dynamicStyles = createDynamicStyles(theme, serviceChargeConfig);
 
@@ -467,7 +467,7 @@ const POSScreen: React.FC = () => {
             setShowSumUpPayment(true);
           } else {
             logger.warn('⚠️ SumUp not compatible, showing alternatives');
-const _fallbackMethods = compatibilityService.getFallbackPaymentMethods();
+            const _fallbackMethods = compatibilityService.getFallbackPaymentMethods();
 
             Alert.alert(
               'Tap to Pay Unavailable',
@@ -576,7 +576,7 @@ const _fallbackMethods = compatibilityService.getFallbackPaymentMethods();
     }
   };
 
-const handlePaymentComplete = (result: unknown) => {
+  const handlePaymentComplete = (result: unknown) => {
     if (result.success) {
       Alert.alert(
         'Payment Successful',
@@ -849,9 +849,7 @@ const handlePaymentComplete = (result: unknown) => {
           </View>
           {/* Service Charge Sync Indicator */}
           <View style={[styles.statItem, styles.serviceChargeIndicator]}>
-            <Text
-              style={[styles.statValue, dynamicStyles.serviceChargeValue]}
-            >
+            <Text style={[styles.statValue, dynamicStyles.serviceChargeValue]}>
               {serviceChargeConfig.enabled ? `${serviceChargeConfig.rate}%` : 'OFF'}
             </Text>
             <Text style={styles.statLabel}>Service</Text>
@@ -918,12 +916,7 @@ const handlePaymentComplete = (result: unknown) => {
             <Text style={[styles.loadingText, dynamicStyles.loadingTextColored]}>
               No menu items available
             </Text>
-            <Text
-              style={[
-                styles.loadingText,
-                styles.loadingSubtext,
-              ]}
-            >
+            <Text style={[styles.loadingText, styles.loadingSubtext]}>
               Please contact support to set up your menu
             </Text>
             <TouchableOpacity
@@ -975,12 +968,10 @@ const handlePaymentComplete = (result: unknown) => {
               color={theme.colors.mediumGray}
               style={dynamicStyles.categorySearchWrapper}
             />
-            <Text style={[styles.loadingText, dynamicStyles.loadingTextColored]}>No items found</Text>
-            <Text
-              style={styles.loadingSubtext}
-            >
-              Try a different search or category
+            <Text style={[styles.loadingText, dynamicStyles.loadingTextColored]}>
+              No items found
             </Text>
+            <Text style={styles.loadingSubtext}>Try a different search or category</Text>
           </View>
         ) : (
           <FlatList
@@ -1298,7 +1289,7 @@ const handlePaymentComplete = (result: unknown) => {
 };
 
 // Dynamic styles creator for conditional styling
-const createDynamicStyles = (theme: unknown, serviceChargeConfig: { enabled: boolean }) => 
+const createDynamicStyles = (theme: unknown, serviceChargeConfig: { enabled: boolean }) =>
   StyleSheet.create({
     serviceChargeValue: {
       color: serviceChargeConfig.enabled ? '#00D4AA' : '#999',

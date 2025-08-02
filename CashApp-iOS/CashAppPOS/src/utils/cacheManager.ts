@@ -13,7 +13,7 @@ export interface CacheOptions {
 }
 
 class CacheManager {
-  private memoryCache = new Map<string, CacheEntry<unknown>>();
+  private memoryCache = new Map<string, CacheEntry<any>>();
   private defaultTTL = 5 * 60 * 1000; // 5 minutes
   private maxMemorySize = 100;
 
@@ -47,7 +47,7 @@ class CacheManager {
       try {
         await AsyncStorage.setItem(`cache_${key}`, JSON.stringify(entry));
       } catch (error) {
-        logger.warn('Failed to persist cache entry to storage:', error);
+        console.warn('Failed to persist cache entry to storage:', error);
       }
     }
   }
@@ -74,7 +74,7 @@ class CacheManager {
           }
         }
       } catch (error) {
-        logger.warn('Failed to retrieve cache entry from storage:', error);
+        console.warn('Failed to retrieve cache entry from storage:', error);
       }
     }
 
@@ -100,7 +100,7 @@ class CacheManager {
     try {
       await AsyncStorage.removeItem(`cache_${key}`);
     } catch (error) {
-      logger.warn('Failed to remove cache entry from storage:', error);
+      console.warn('Failed to remove cache entry from storage:', error);
     }
   }
 
@@ -115,7 +115,7 @@ class CacheManager {
       const cacheKeys = keys.filter((key) => key.startsWith('cache_'));
       await AsyncStorage.multiRemove(cacheKeys);
     } catch (error) {
-      logger.warn('Failed to clear cache from storage:', error);
+      console.warn('Failed to clear cache from storage:', error);
     }
   }
 
@@ -221,7 +221,7 @@ export const cacheManager = new CacheManager();
 // Utility functions for common caching patterns
 export const cacheUtils = {
   // Cache menu items with shorter TTL
-  cacheMenuItems: async (items: unknown[]) => {
+  cacheMenuItems: async (items: any[]) => {
     await cacheManager.set('menu_items', items, {
       ttl: 10 * 60 * 1000, // 10 minutes
       persistToStorage: true,
@@ -229,7 +229,7 @@ export const cacheUtils = {
   },
 
   // Cache user data with longer TTL
-  cacheUserData: async (userData: unknown) => {
+  cacheUserData: async (userData: any) => {
     await cacheManager.set('user_data', userData, {
       ttl: 60 * 60 * 1000, // 1 hour
       persistToStorage: true,
@@ -237,7 +237,7 @@ export const cacheUtils = {
   },
 
   // Cache reports data with medium TTL
-  cacheReportsData: async (reports: unknown) => {
+  cacheReportsData: async (reports: any) => {
     await cacheManager.set('reports_data', reports, {
       ttl: 30 * 60 * 1000, // 30 minutes
       persistToStorage: true,
@@ -245,7 +245,7 @@ export const cacheUtils = {
   },
 
   // Cache images with long TTL
-  cacheImageData: async (imageUrl: string, imageData: unknown) => {
+  cacheImageData: async (imageUrl: string, imageData: any) => {
     await cacheManager.set(`image_${imageUrl}`, imageData, {
       ttl: 24 * 60 * 60 * 1000, // 24 hours
       persistToStorage: true,

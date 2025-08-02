@@ -57,7 +57,7 @@ const ServiceChargeSelectionScreen: React.FC = () => {
   const navigation = useNavigation();
   const { theme } = useTheme();
   const {
-_cart,
+    _cart,
     cartTotal,
     setServiceChargePercentage,
     setAddTransactionFee,

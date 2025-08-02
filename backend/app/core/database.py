@@ -129,7 +129,6 @@ class Restaurant(Base):
         "applePay": {"enabled": True, "feePercentage": 2.9},
         "giftCard": {"enabled": True, "requiresAuth": True}
     })
-    # floor_plan_layout field removed - migration pending in production
     # Subscription fields for Supabase integration
     subscription_plan = Column(String(50), default='alpha')  # alpha, beta, omega
     subscription_status = Column(String(50), default='trial')  # trial, active, cancelled, expired

@@ -5,7 +5,7 @@ import {
   Text,
   View,
   TouchableOpacity,
-  _TextInput,
+  TextInput,
   Modal,
   ScrollView,
   KeyboardAvoidingView,
@@ -236,7 +236,7 @@ const CustomItemEntry: React.FC<CustomItemEntryProps> = ({ visible, onClose }) =
                   minValue={0.01}
                   decimalPlaces={2}
                   placeholder="5.00"
-                  style={styles.decimalInputStyle}
+                  style={{ marginVertical: 8 }}
                 />
               </View>
 
@@ -572,9 +572,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: Colors.white,
-  },
-  decimalInputStyle: {
-    marginVertical: 8,
   },
 });
 

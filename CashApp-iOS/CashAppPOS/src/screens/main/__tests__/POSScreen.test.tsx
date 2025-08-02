@@ -144,7 +144,7 @@ describe('POSScreen', () => {
     // Verify magnifier icon is not present
     // This depends on how the magnifier was implemented (e.g., by icon name or testID)
     // Assuming it was an Icon with name "search"
-const _allIcons = UNSAFE_getByProps({ name: 'search' });
+    const _allIcons = UNSAFE_getByProps({ name: 'search' });
     // If the search icon was only in the header, and now we have one in the bubble,
     // we need a more specific way to check the header.
     // For now, let's assume the header search icon was unique or had a specific testID not present now.
@@ -187,7 +187,7 @@ const _allIcons = UNSAFE_getByProps({ name: 'search' });
   });
 
   it('CartIcon color is orange when empty, red when not empty', () => {
-const { _getByTestId, UNSAFE_getByProps, rerender } = customRenderWithStores(<POSScreen />, {
+    const { _getByTestId, UNSAFE_getByProps, rerender } = customRenderWithStores(<POSScreen />, {
       navigationProps: { navigation: mockNavigation },
     });
 

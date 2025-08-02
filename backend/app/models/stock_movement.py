@@ -1,5 +1,6 @@
 """
 Stock Movement and Supplier Management Models
+Track all inventory movements and supplier relationships
 """
 from sqlalchemy import Column, String, Integer, Boolean, DateTime, Date, DECIMAL, ForeignKey, Enum as SqlEnum
 from sqlalchemy.dialects.postgresql import UUID, JSONB

@@ -243,7 +243,7 @@ async def get_daily_sales_report(
     """
     try:
         from datetime import datetime, timedelta
-        from sqlalchemy import and_
+        from sqlalchemy import func, and_
         
         # Use user's restaurant if not specified
         if not restaurant_id:

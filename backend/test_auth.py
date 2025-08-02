@@ -3,8 +3,6 @@
 Test authentication endpoint with a sample Supabase token
 """
 
-
-"""
 import requests
 import json
 
@@ -21,11 +19,8 @@ def test_auth_without_token():
 def test_auth_with_invalid_token():
     """Test authentication with invalid token"""
     print("2. Testing with invalid token...")
-    import uuid
-    # Generate a dynamic invalid token for testing
-    invalid_token = f"invalid_token_{uuid.uuid4().hex[:8]}"
     headers = {
-        "Authorization": f"Bearer {invalid_token}"
+        "Authorization": "Bearer invalid_token_12345"
     }
     response = requests.post(API_URL, headers=headers)
     print(f"   Status: {response.status_code}")

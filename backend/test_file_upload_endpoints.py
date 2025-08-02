@@ -4,8 +4,6 @@ File Upload API Endpoints Testing for Fynlo POS
 Tests the actual API endpoints with real HTTP requests
 """
 
-
-"""
 import asyncio
 import base64
 import json

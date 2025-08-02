@@ -213,7 +213,7 @@ class AuthInterceptor {
    */
   async post(
     url: string,
-body: unknown,
+    body: unknown,
     headers: Record<string, string> = {},
     timeoutMs: number = 10000
   ): Promise<Response> {
@@ -248,7 +248,7 @@ body: unknown,
    */
   async put(
     url: string,
-body: unknown,
+    body: unknown,
     headers: Record<string, string> = {},
     timeoutMs: number = 10000
   ): Promise<Response> {
@@ -316,7 +316,7 @@ body: unknown,
    */
   async patch(
     url: string,
-body: unknown,
+    body: unknown,
     headers: Record<string, string> = {},
     timeoutMs: number = 10000
   ): Promise<Response> {

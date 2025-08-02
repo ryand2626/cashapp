@@ -178,7 +178,11 @@ const OperatingHoursScreen: React.FC = () => {
   };
 
   const handleTimePress = (day: string, type: 'open' | 'close') => {
-    const dayData = formData[day as keyof typeof formData] as { open: string; close: string; closed: boolean };
+    const dayData = formData[day as keyof typeof formData] as {
+      open: string;
+      close: string;
+      closed: boolean;
+    };
     setTimePickerConfig({
       day,
       type,
@@ -212,7 +216,11 @@ const OperatingHoursScreen: React.FC = () => {
   };
 
   const copyToAllDays = (sourceDay: string) => {
-    const sourceDayData = formData[sourceDay as keyof typeof formData] as { open: string; close: string; closed: boolean };
+    const sourceDayData = formData[sourceDay as keyof typeof formData] as {
+      open: string;
+      close: string;
+      closed: boolean;
+    };
     Alert.alert(
       'Copy Hours',
       `Copy ${daysOfWeek.find((d) => d.key === sourceDay)?.label} hours to all other days?`,
@@ -242,7 +250,7 @@ const OperatingHoursScreen: React.FC = () => {
       updateOperatingHours(formData);
       setHasChanges(false);
       Alert.alert('Success', 'Operating hours have been saved successfully.', [{ text: 'OK' }]);
-} catch (_error) {
+    } catch (_error) {
       Alert.alert('Error', 'Failed to save operating hours. Please try again.', [{ text: 'OK' }]);
     }
   };
@@ -262,7 +270,11 @@ const OperatingHoursScreen: React.FC = () => {
   };
 
   const renderDayCard = (day: { key: string; label: string }) => {
-    const dayData = formData[day.key as keyof typeof formData] as { open: string; close: string; closed: boolean };
+    const dayData = formData[day.key as keyof typeof formData] as {
+      open: string;
+      close: string;
+      closed: boolean;
+    };
     const isToday =
       new Date().toLocaleDateString('en', { weekday: 'long' }).toLowerCase() === day.key;
 

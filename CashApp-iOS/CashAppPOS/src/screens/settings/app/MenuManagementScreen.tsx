@@ -206,7 +206,7 @@ const MenuManagementScreen: React.FC = () => {
     }
   };
 
-const _handleDeleteCategory = (categoryId: string) => {
+  const _handleDeleteCategory = (categoryId: string) => {
     const category = categories.find((c) => c.id === categoryId);
     Alert.alert(
       'Delete Category',
@@ -377,7 +377,7 @@ const _handleDeleteCategory = (categoryId: string) => {
     );
   };
 
-const _toggleCategoryVisibility = async (categoryId: string) => {
+  const _toggleCategoryVisibility = async (categoryId: string) => {
     const category = categories.find((c) => c.id === categoryId);
 
     if (!category) return;
@@ -684,7 +684,7 @@ Desserts,Churros,"Cinnamon sugar dusted, with chocolate sauce",5.99`;
       Alert.alert(errorCount > 0 ? 'Import Partially Complete' : 'Import Complete', message, [
         { text: 'OK' },
       ]);
-} catch (error: unknown) {
+    } catch (error: unknown) {
       Alert.alert('Import Error', error.message || 'Failed to process CSV data');
     } finally {
       setLoading(false);

@@ -3,8 +3,6 @@ Test script for Supabase authentication integration
 Run this after setting up your .env file with Supabase credentials
 """
 
-
-"""
 import asyncio
 import httpx
 import os
@@ -18,9 +16,9 @@ API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
-# Test data - get from environment for security
-TEST_EMAIL = os.getenv("TEST_EMAIL", "test@example.com")
-TEST_PASSWORD = os.getenv("TEST_PASSWORD", "test_password_placeholder")
+# Test data
+TEST_EMAIL = "test@example.com"
+TEST_PASSWORD = "testpassword123"
 
 
 async def test_supabase_connection():
@@ -138,9 +136,9 @@ async def main():
     
     # For testing, you'll need to manually get a token from Supabase
     # This would normally come from the sign-in process
-    TEST_TOKEN = os.getenv("SUPABASE_TEST_TOKEN", "")
+    TEST_TOKEN = "YOUR_SUPABASE_ACCESS_TOKEN_HERE"
     
-    if not TEST_TOKEN:
+    if TEST_TOKEN == "YOUR_SUPABASE_ACCESS_TOKEN_HERE":
         print("❌ Please set TEST_TOKEN with a valid Supabase access token")
         return
     

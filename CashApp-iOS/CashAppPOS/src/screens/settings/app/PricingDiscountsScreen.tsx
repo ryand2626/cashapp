@@ -52,7 +52,7 @@ interface PricingRule {
   id: string;
   name: string;
   type: 'bulk_discount' | 'happy_hour' | 'loyalty_tier';
-  conditions: unknown;
+  conditions: any;
   discountValue: number;
   isActive: boolean;
 }

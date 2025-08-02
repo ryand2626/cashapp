@@ -62,7 +62,7 @@ export class BackendCompatibilityService {
   static transformEmployee(backendEmployee: BackendEmployee): unknown {
     const now = new Date();
     const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
-const _sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
+    const _sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
 
     return {
       ...backendEmployee,
@@ -89,7 +89,7 @@ const _sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, now.getDat
   /**
    * Transform employees array
    */
-static transformEmployees(backendEmployees: BackendEmployee[]): unknown[] {
+  static transformEmployees(backendEmployees: BackendEmployee[]): unknown[] {
     return backendEmployees.map((emp) => this.transformEmployee(emp));
   }
 

@@ -57,7 +57,12 @@
         "name": "Authentic Mexican Cuisine",
         "slug": "mexican-pilot-001"
       },
-      "permissions": ["process_orders", "handle_payments", "view_menu", "access_pos"],
+      "permissions": [
+        "process_orders",
+        "handle_payments",
+        "view_menu",
+        "access_pos"
+      ],
       "isActive": true,
       "created_at": "2025-01-01T00:00:00Z"
     },
@@ -96,14 +101,14 @@
         "color": "#00A651"
       },
       {
-        "label": "Platform Owner",
+        "label": "Platform Owner", 
         "username": "platform_owner",
         "description": "Platform-wide administration",
         "color": "#0066CC"
       },
       {
         "label": "Manager",
-        "username": "manager",
+        "username": "manager", 
         "description": "Restaurant operations management",
         "color": "#FF6B35"
       },

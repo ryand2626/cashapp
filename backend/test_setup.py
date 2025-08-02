@@ -3,8 +3,6 @@
 Quick test script to verify backend setup and dependencies
 """
 
-
-"""
 import sys
 import subprocess
 
@@ -35,18 +33,21 @@ def test_imports():
     
     try:
         from app.core.config import settings
+        print("✅ Config loaded")
     except Exception as e:
         print(f"❌ Config failed: {e}")
         return False
     
     try:
         from app.core.database import Base
+        print("✅ Database models loaded")
     except Exception as e:
         print(f"❌ Database models failed: {e}")
         return False
     
     try:
         from app.main import app
+        print("✅ FastAPI app loaded")
     except Exception as e:
         print(f"❌ FastAPI app failed: {e}")
         return False

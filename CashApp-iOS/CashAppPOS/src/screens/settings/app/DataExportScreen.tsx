@@ -231,7 +231,7 @@ const DataExportScreen: React.FC = () => {
       // Reset selections
       setSelectedDataTypes([]);
       setDateRange({ start: '', end: '' });
-} catch (_error) {
+    } catch (_error) {
       Alert.alert('Error', 'Failed to export data. Please try again.');
     } finally {
       setIsExporting(false);

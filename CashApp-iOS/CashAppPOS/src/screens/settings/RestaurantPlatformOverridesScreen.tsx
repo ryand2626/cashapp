@@ -50,7 +50,7 @@ const RestaurantPlatformOverridesScreen: React.FC = () => {
 
   // Mock restaurant ID - in real app, this would come from auth context
   const restaurantId = 'restaurant-123';
-const _userRole = 'restaurant_owner'; // This would come from auth context
+  const _userRole = 'restaurant_owner'; // This would come from auth context
 
   const [effectiveSettings, setEffectiveSettings] = useState<Record<string, EffectiveSetting>>({});
   const [loading, setLoading] = useState(true);

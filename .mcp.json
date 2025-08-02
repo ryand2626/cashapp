@@ -1,51 +1,12 @@
 {
   "mcpServers": {
     "filesystem": {
-      "command": "/opt/homebrew/bin/npx",
+      "command": "npx",
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "/Users/arnauddecube/Documents/Fynlo/cashapp-fynlo"
+        "."
       ]
-    },
-    "sequential-thinking": {
-      "command": "/opt/homebrew/bin/npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ]
-    },
-    "memory-bank": {
-      "command": "/opt/homebrew/bin/npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-memory"
-      ]
-    },
-    "playwright": {
-      "command": "/opt/homebrew/bin/npx",
-      "args": [
-        "-y",
-        "@playwright/mcp"
-      ]
-    },
-    "puppeteer": {
-      "command": "/opt/homebrew/bin/npx",
-      "args": [
-        "-y",
-        "puppeteer-mcp-server"
-      ]
-    },
-    "ref": {
-      "type": "http",
-      "url": "https://api.ref.tools/mcp?apiKey=ref-e06e8f51d674800dffaf"
-    },
-    "tree-sitter": {
-      "command": "python3",
-      "args": ["-m", "mcp_server_tree_sitter.server"],
-      "env": {
-        "PYTHONPATH": "./backend"
-      }
     }
   }
 }

@@ -1,3 +1,5 @@
+import { logger } from '../../utils/logger';
+
 // Note: This is a placeholder implementation since SumUp SDK for React Native
 // would need to be obtained from SumUp directly.
 
@@ -50,7 +52,7 @@ class SumUpPaymentProviderClass {
 
   async processPayment(
     amount: number,
-    _currency: string = 'GBP',
+    currency: string = 'GBP',
     title?: string
   ): Promise<SumUpPaymentResult> {
     try {
@@ -77,7 +79,7 @@ class SumUpPaymentProviderClass {
     }
   }
 
-  async getCardReaderSettings(): Promise<unknown> {
+  async getCardReaderSettings(): Promise<any> {
     try {
       if (!this.initialized) {
         throw new Error('SumUp not initialized');

@@ -116,7 +116,7 @@ const BackupRestoreScreen: React.FC = () => {
 
       setBackups((prev) => [newBackup, ...prev]);
       Alert.alert('Success', 'Backup created successfully!');
-    } catch (_error) {
+    } catch (error) {
       Alert.alert('Error', 'Failed to create backup. Please try again.');
     } finally {
       setIsCreatingBackup(false);
@@ -143,7 +143,7 @@ const BackupRestoreScreen: React.FC = () => {
         `Data has been restored from "${selectedBackup.name}". The app will restart to apply changes.`,
         [{ text: 'OK' }]
       );
-    } catch (_error) {
+    } catch (error) {
       Alert.alert('Error', 'Failed to restore backup. Please try again.');
     } finally {
       setIsRestoring(false);

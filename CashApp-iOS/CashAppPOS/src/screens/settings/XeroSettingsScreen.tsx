@@ -21,7 +21,7 @@ import XeroAuthService from '../../services/XeroAuthService';
 
 interface ConnectionStatus {
   isConnected: boolean;
-  organization?: unknown;
+  organization?: any;
   lastSync?: number;
   error?: string;
 }
@@ -60,7 +60,7 @@ const XeroSettingsScreen: React.FC = () => {
             lastSync: Date.now(),
           });
         } catch (error) {
-          logger.error('Error fetching organization:', error);
+          console.error('Error fetching organization:', error);
           setConnectionStatus({
             isConnected: true,
             error: 'Connected but unable to fetch organization data',
@@ -70,7 +70,7 @@ const XeroSettingsScreen: React.FC = () => {
         setConnectionStatus({ isConnected: false });
       }
     } catch (error) {
-      logger.error('Error checking connection:', error);
+      console.error('Error checking connection:', error);
       setConnectionStatus({
         isConnected: false,
         error: 'Unable to check connection status',
@@ -110,7 +110,7 @@ const XeroSettingsScreen: React.FC = () => {
                   subscription?.remove();
                 }, 300000);
               } catch (error) {
-                logger.error('OAuth error:', error);
+                console.error('OAuth error:', error);
                 Alert.alert('Error', 'Failed to open Xero authorization. Please try again.');
               }
             },
@@ -118,7 +118,7 @@ const XeroSettingsScreen: React.FC = () => {
         ]
       );
     } catch (error) {
-      logger.error('Connection error:', error);
+      console.error('Connection error:', error);
       Alert.alert('Error', 'Failed to initiate connection to Xero');
     } finally {
       setLoading(false);
@@ -153,7 +153,7 @@ const XeroSettingsScreen: React.FC = () => {
         await checkConnectionStatus();
       }
     } catch (error) {
-      logger.error('OAuth callback error:', error);
+      console.error('OAuth callback error:', error);
       Alert.alert('Error', 'Failed to complete Xero authorization');
     } finally {
       setLoading(false);
@@ -179,7 +179,7 @@ const XeroSettingsScreen: React.FC = () => {
               setConnectionStatus({ isConnected: false });
               Alert.alert('Disconnected', 'Successfully disconnected from Xero');
             } catch (error) {
-              logger.error('Disconnect error:', error);
+              console.error('Disconnect error:', error);
               Alert.alert('Error', 'Failed to disconnect from Xero');
             } finally {
               setLoading(false);
@@ -204,7 +204,7 @@ const XeroSettingsScreen: React.FC = () => {
         Alert.alert('Failed', 'Unable to connect to Xero API');
       }
     } catch (error) {
-      logger.error('Test connection error:', error);
+      console.error('Test connection error:', error);
       Alert.alert('Error', 'Connection test failed');
     } finally {
       setLoading(false);
@@ -228,7 +228,7 @@ const XeroSettingsScreen: React.FC = () => {
 
       Alert.alert('Success', 'Manual sync completed');
     } catch (error) {
-      logger.error('Manual sync error:', error);
+      console.error('Manual sync error:', error);
       setSyncStatus({
         inProgress: false,
         error: 'Sync failed',

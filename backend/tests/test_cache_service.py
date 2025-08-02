@@ -2,8 +2,6 @@
 Test suite for CacheService and caching functionality
 """
 
-
-"""
 import pytest
 import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch

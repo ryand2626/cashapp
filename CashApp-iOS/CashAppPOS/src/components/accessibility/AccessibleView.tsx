@@ -72,7 +72,7 @@ const AccessibleView: React.FC<AccessibleViewProps> = ({
   // Normalize accessibility state
   const normalizedAccessibilityState = accessibilityState
     ? 'selected' in accessibilityState || 'disabled' in accessibilityState
-? createAccessibilityState(accessibilityState as unknown)
+      ? createAccessibilityState(accessibilityState as unknown)
       : (accessibilityState as AccessibilityState)
     : undefined;
 

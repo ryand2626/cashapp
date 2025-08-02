@@ -3,8 +3,6 @@ Comprehensive tests for RLS bug fixes
 Tests all issues identified by CursorBugBot
 """
 
-
-"""
 import pytest
 import asyncio
 import threading

@@ -2,7 +2,7 @@
   "extends": "@react-native/typescript-config/tsconfig.json",
   "compilerOptions": {
     "target": "esnext",
-    "module": "es2015",
+    "module": "commonjs",
     "lib": ["es2022"],
     "jsx": "react-native",
     "strict": true,
@@ -13,8 +13,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "allowJs": true,
-    "moduleResolution": "bundler",
-    "customConditions": ["react-native"],
+    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
@@ -31,8 +30,15 @@
       "@config/*": ["src/config/*"],
       "@assets/*": ["src/assets/*"]
     },
-    "types": ["react", "react-native", "jest"],
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "types": [
+      "react",
+      "react-native",
+      "jest"
+    ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ]
   },
   "include": [
     "src/**/*",

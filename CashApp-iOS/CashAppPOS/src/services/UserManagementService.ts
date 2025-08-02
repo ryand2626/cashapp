@@ -104,7 +104,7 @@ interface PermissionTemplate {
 interface BulkOperation {
   type: 'activate' | 'deactivate' | 'suspend' | 'delete' | 'change_role' | 'update_permissions';
   userIds: string[];
-  data?: unknown;
+  data?: any;
 }
 
 interface SecuritySettings {

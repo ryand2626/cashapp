@@ -62,8 +62,8 @@ const OrderTypeSegment = ['Dine In', 'Takeout', 'Pickup', 'Delivery'];
 
 export const TableSelectionScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
-  const _route = useRoute();
-  const { _user } = useAppStore();
+  const route = useRoute();
+  const { user } = useAppStore();
   const [tables, setTables] = useState<Table[]>([]);
   const [sections, setSections] = useState<Section[]>([]);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
@@ -79,7 +79,7 @@ export const TableSelectionScreen: React.FC = () => {
         setSections(response.sections || []);
       }
     } catch (error) {
-      logger.error('Error fetching floor plan:', error);
+      console.error('Error fetching floor plan:', error);
       Alert.alert('Error', 'Failed to load tables');
     } finally {
       setLoading(false);

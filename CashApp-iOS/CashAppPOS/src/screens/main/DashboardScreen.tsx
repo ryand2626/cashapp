@@ -131,12 +131,7 @@ const DashboardScreen: React.FC = () => {
           size={16}
           color={dynamicStyles.kpiChangeIcon(changeType).color}
         />
-        <Text
-          style={[
-            styles.kpiChangeText,
-            dynamicStyles.kpiChangeText(changeType),
-          ]}
-        >
+        <Text style={[styles.kpiChangeText, dynamicStyles.kpiChangeText(changeType)]}>
           {change}
         </Text>
         <Text style={styles.kpiChangeLabel}>vs yesterday</Text>
@@ -183,12 +178,7 @@ const DashboardScreen: React.FC = () => {
 
   const AlertCard = ({ alert }: { alert: AlertItem }) => (
     <View style={styles.alertCard}>
-      <View
-        style={[
-          styles.alertIcon,
-          dynamicStyles.alertIcon(alert.type),
-        ]}
-      >
+      <View style={[styles.alertIcon, dynamicStyles.alertIcon(alert.type)]}>
         <Icon
           name={
             alert.type === 'warning'

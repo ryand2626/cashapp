@@ -3,8 +3,6 @@ Tests for RLS (Row Level Security) session variable isolation
 Ensures that database connections properly isolate tenant data
 """
 
-
-"""
 import pytest
 import asyncio
 import threading

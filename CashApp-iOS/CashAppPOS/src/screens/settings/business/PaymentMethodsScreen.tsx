@@ -136,7 +136,7 @@ const PaymentMethodsScreen: React.FC = () => {
       Alert.alert('Success', 'Payment methods configuration has been saved successfully.', [
         { text: 'OK' },
       ]);
-} catch (_error) {
+    } catch (_error) {
       Alert.alert('Error', 'Failed to save payment methods configuration. Please try again.', [
         { text: 'OK' },
       ]);

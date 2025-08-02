@@ -4,8 +4,6 @@ Tests to verify complete data isolation between restaurants
 Written BEFORE implementing fixes to ensure we catch any vulnerabilities
 """
 
-
-"""
 import pytest
 import uuid
 from datetime import datetime

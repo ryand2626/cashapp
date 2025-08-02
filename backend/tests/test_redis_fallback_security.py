@@ -2,8 +2,6 @@
 Tests for Redis fallback security - ensures fail-closed behavior
 """
 
-
-"""
 import pytest
 from unittest.mock import Mock, patch, AsyncMock
 import time

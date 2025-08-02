@@ -4,8 +4,6 @@ Database Functionality Test Suite for Fynlo POS
 Tests all database operations and API endpoints after setup
 """
 
-
-"""
 import asyncio
 import sys
 import json

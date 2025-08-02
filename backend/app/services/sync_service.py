@@ -25,6 +25,7 @@ class SyncService:
     """
     Manages bidirectional data synchronization between platform and restaurants
     """
+    
     def __init__(self):
         self.redis_client: Optional[Redis] = None
         self.ws_manager: Optional['EnhancedWebSocketManager'] = None
@@ -326,4 +327,3 @@ sync_service = SyncService()
 async def get_sync_service() -> SyncService:
     """Get sync service instance"""
     return sync_service
-

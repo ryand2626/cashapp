@@ -87,7 +87,7 @@ const LaborReportDetailScreen = () => {
 
       // Process the data
       const processedData: LaborData[] =
-data.employees?.map((emp: unknown) => ({
+        data.employees?.map((emp: unknown) => ({
           employeeId: emp.id,
           employeeName: emp.name || `${emp.first_name} ${emp.last_name}`,
           role: emp.role,

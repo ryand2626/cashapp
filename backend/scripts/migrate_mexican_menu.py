@@ -15,8 +15,6 @@ Requirements:
     - Restaurant tenant ID for Mexican restaurant
 """
 
-
-"""
 import json
 import sys
 import os

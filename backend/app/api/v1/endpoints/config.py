@@ -119,7 +119,7 @@ async def get_provider_configuration(
             data=provider_config,
             message=f"Configuration for {provider_name} retrieved successfully"
         )
-    except FynloException:
+    except HTTPException:
         raise
     except Exception as e:
         raise FynloException(message=str(e))
@@ -163,7 +163,7 @@ async def update_provider_configuration(
             },
             message=f"Configuration for {provider_name} updated successfully"
         )
-    except FynloException:
+    except HTTPException:
         raise
     except Exception as e:
         raise FynloException(message=str(e))
@@ -231,7 +231,7 @@ async def update_routing_configuration(
             },
             message="Routing configuration updated successfully"
         )
-    except FynloException:
+    except HTTPException:
         raise
     except Exception as e:
         raise FynloException(message=str(e))
@@ -380,7 +380,7 @@ async def get_system_metrics(
             data=metrics,
             message=f"System metrics for last {hours} hours retrieved successfully"
         )
-    except FynloException:
+    except HTTPException:
         raise
     except Exception as e:
         raise FynloException(message=str(e))
@@ -426,7 +426,7 @@ async def test_routing_simulation(
             data=simulation_result,
             message="Routing simulation completed successfully"
         )
-    except FynloException:
+    except HTTPException:
         raise
     except Exception as e:
         raise FynloException(message=str(e))

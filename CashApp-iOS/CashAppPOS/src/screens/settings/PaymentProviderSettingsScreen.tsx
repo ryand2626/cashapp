@@ -14,6 +14,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+import { logger } from '../../utils/logger';
+
 import PaymentService from '../../services/PaymentService';
 
 import type { PaymentProviderConfig } from '../../services/PaymentService';

@@ -53,7 +53,7 @@ class APITestingService {
   async testEndpoint(
     endpoint: string,
     method: string = 'GET',
-body?: unknown,
+    body?: unknown,
     headers?: Record<string, string>
   ): Promise<APITestResult> {
     const startTime = Date.now();

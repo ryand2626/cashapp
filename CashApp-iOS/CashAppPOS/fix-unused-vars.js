@@ -26,18 +26,20 @@ lines.forEach((line) => {
     currentFile = fileMatch[0];
     return;
   }
-  
+
   // Check if this is an unused vars warning
-  const issueMatch = line.match(/^\s*(\d+):(\d+)\s+warning\s+'([^']+)' is (defined but never used|assigned a value but never used)\./);
+  const issueMatch = line.match(
+    /^\s*(\d+):(\d+)\s+warning\s+'([^']+)' is (defined but never used|assigned a value but never used)\./
+  );
   if (issueMatch && currentFile) {
     const [, lineNum, colNum, varName] = issueMatch;
     if (!fileFixes.has(currentFile)) {
       fileFixes.set(currentFile, []);
     }
-    fileFixes.get(currentFile).push({ 
-      line: parseInt(lineNum), 
+    fileFixes.get(currentFile).push({
+      line: parseInt(lineNum),
       col: parseInt(colNum),
-      varName: varName
+      varName,
     });
   }
 });
@@ -47,22 +49,22 @@ console.log(`Found ${fileFixes.size} files with no-unused-vars issues`);
 // Process each file
 fileFixes.forEach((issues, filePath) => {
   try {
-    let content = fs.readFileSync(filePath, 'utf8');
+    const content = fs.readFileSync(filePath, 'utf8');
     const lines = content.split('\n');
-    
+
     // Sort issues by line number in reverse order to avoid offset issues
     issues.sort((a, b) => b.line - a.line);
-    
+
     issues.forEach(({ line, varName }) => {
       const lineIndex = line - 1;
       if (lineIndex < lines.length) {
         const currentLine = lines[lineIndex];
-        
+
         // Skip if already prefixed with underscore
         if (varName.startsWith('_')) {
           return;
         }
-        
+
         // Common patterns to fix
         lines[lineIndex] = currentLine
           // Variable declarations
@@ -74,12 +76,15 @@ fileFixes.forEach((issues, filePath) => {
           .replace(new RegExp(`\\{([^}]*?)\\b${varName}\\b`, 'g'), `{$1_${varName}`)
           .replace(new RegExp(`\\b${varName}\\b([^}]*?)\\}`, 'g'), `_${varName}$1}`)
           // Import statements
-          .replace(new RegExp(`import\\s*\\{([^}]*?)\\b${varName}\\b`, 'g'), `import {$1_${varName}`)
+          .replace(
+            new RegExp(`import\\s*\\{([^}]*?)\\b${varName}\\b`, 'g'),
+            `import {$1_${varName}`
+          )
           // Catch handlers
           .replace(new RegExp(`catch\\s*\\(\\s*${varName}\\s*\\)`, 'g'), `catch (_${varName})`);
       }
     });
-    
+
     const newContent = lines.join('\n');
     if (newContent !== content) {
       fs.writeFileSync(filePath, newContent);

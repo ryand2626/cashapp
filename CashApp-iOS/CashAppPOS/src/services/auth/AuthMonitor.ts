@@ -7,6 +7,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { logger } from '../../utils/logger';
 import tokenManager from '../../utils/tokenManager';
 
 interface AuthEvent {
@@ -19,7 +20,7 @@ interface AuthEvent {
     | 'auth_error'
     | 'session_expired';
   message: string;
-  details?: unknown;
+  details?: any;
 }
 
 class AuthMonitor {
@@ -63,7 +64,7 @@ class AuthMonitor {
   /**
    * Log an authentication event
    */
-  logEvent(type: AuthEvent['type'], message: string, details?: unknown) {
+  logEvent(type: AuthEvent['type'], message: string, details?: any) {
     const event: AuthEvent = {
       timestamp: new Date().toISOString(),
       type,
@@ -118,7 +119,7 @@ class AuthMonitor {
     try {
       await AsyncStorage.setItem('auth_monitor_events', JSON.stringify(this.events));
     } catch (error) {
-      logger.error('Failed to persist auth events:', error);
+      console.error('Failed to persist auth events:', error);
     }
   }
 
@@ -132,7 +133,7 @@ class AuthMonitor {
         this.events = JSON.parse(stored);
       }
     } catch (error) {
-      logger.error('Failed to load auth events:', error);
+      console.error('Failed to load auth events:', error);
     }
   }
 

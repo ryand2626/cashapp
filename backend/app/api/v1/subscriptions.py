@@ -5,8 +5,7 @@ This module provides REST API endpoints for managing restaurant subscriptions,
 subscription plans, and usage tracking.
 """
 
-
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import datetime, timedelta

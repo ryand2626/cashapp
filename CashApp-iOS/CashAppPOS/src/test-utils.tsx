@@ -78,7 +78,7 @@ const AllTheProviders = ({ children, navigationProps = {} }: unknown) => {
   const mockRoute = navigationProps.route || createMockRoute();
 
   // Create navigation state
-const navigationRef = React.createRef<unknown>();
+  const navigationRef = React.createRef<unknown>();
 
   return (
     <SafeAreaProvider

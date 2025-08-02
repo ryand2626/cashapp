@@ -3,8 +3,6 @@
 Test script for Database Transaction Management implementation
 """
 
-
-"""
 import asyncio
 import sys
 import os
@@ -104,7 +102,7 @@ async def test_order_creation_atomicity():
         print("✅ Atomic stock update logic found")
         
         # Check for proper error handling
-        if "FynloException" not in source and "logger.error" not in source:
+        if "HTTPException" not in source and "logger.error" not in source:
             print("❌ Error handling not found in create_order")
             return False
         

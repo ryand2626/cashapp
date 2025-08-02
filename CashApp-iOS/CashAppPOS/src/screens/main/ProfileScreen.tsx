@@ -301,10 +301,7 @@ const ProfileScreenContent: React.FC = () => {
                   <Text style={styles.cancelButtonText}>Cancel</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={dynamicStyles.modalSaveButton}
-                  onPress={handleSaveProfile}
-                >
+                <TouchableOpacity style={dynamicStyles.modalSaveButton} onPress={handleSaveProfile}>
                   <Text style={styles.saveButtonText}>Save Changes</Text>
                 </TouchableOpacity>
               </View>
@@ -394,7 +391,7 @@ const ProfileScreenContent: React.FC = () => {
 };
 
 // Dynamic styles creator for button combinations
-const createDynamicStyles = (theme: unknown) => 
+const createDynamicStyles = (theme: unknown) =>
   StyleSheet.create({
     modalCancelButton: {
       flex: 1,

@@ -53,7 +53,7 @@ const TaxConfigurationScreen: React.FC = () => {
     { rate: 0, description: 'Zero Rate (0%)', category: "Books, food, children's clothes, etc." },
   ];
 
-const handleFieldChange = (field: string, value: unknown) => {
+  const handleFieldChange = (field: string, value: unknown) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setHasChanges(true);
   };
@@ -104,7 +104,7 @@ const handleFieldChange = (field: string, value: unknown) => {
       updateTaxConfiguration(formData);
       setHasChanges(false);
       Alert.alert('Success', 'Tax configuration has been saved successfully.', [{ text: 'OK' }]);
-} catch (_error) {
+    } catch (_error) {
       Alert.alert('Error', 'Failed to save tax configuration. Please try again.', [{ text: 'OK' }]);
     }
   };

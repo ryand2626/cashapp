@@ -403,7 +403,7 @@ class OrderService {
 
       // Remove successfully synced orders from queue
       const remainingQueue = queueData.filter(
-(item: unknown) => !processedIds.includes(item.timestamp)
+        (item: unknown) => !processedIds.includes(item.timestamp)
       );
 
       await AsyncStorage.setItem('order_sync_queue', JSON.stringify(remainingQueue));

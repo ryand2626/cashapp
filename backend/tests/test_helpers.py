@@ -1,18 +1,15 @@
 """Test Helpers and Utilities for FastAPI Testing
 
 This module provides reusable test utilities, factories, and helpers
-"""
 for achieving 100% test coverage across the Fynlo backend.
 """
 
-"""
 from typing import Dict, Any, Optional, List, Callable
 from datetime import datetime, timedelta
 from decimal import Decimal
 import json
 import random
 import string
-import os
 from unittest.mock import Mock, AsyncMock, MagicMock
 import asyncio
 from contextlib import asynccontextmanager
@@ -22,7 +19,10 @@ from fastapi.testclient import TestClient
 import httpx
 import redis
 
-from app.core.database import User, Restaurant, Order, Product as MenuItem
+from app.models.user import User
+from app.models.restaurant import Restaurant
+from app.models.order import Order
+from app.models.menu_item import MenuItem
 from app.core.security import create_access_token
 
 
@@ -47,7 +47,7 @@ class TestDataFactory:
             id=user_id or random.randint(1000, 9999),
             email=email or f"user{random.randint(1000, 9999)}@test.com",
             username=kwargs.get("username", f"user{random.randint(1000, 9999)}"),
-            hashed_password=os.environ.get("TEST_USER_PASSWORD_HASH", "$2b$12$dynamicTestHash"),  # Pre-hashed "password"
+            hashed_password="$2b$12$test",  # Pre-hashed "password"
             role=role,
             restaurant_id=restaurant_id,
             is_active=kwargs.get("is_active", True),
@@ -528,13 +528,13 @@ class SecurityTestHelper:
         """Generate various malformed JWT tokens for testing"""
         return [
             # No signature
-            os.environ.get("TEST_JWT_NO_SIG", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0."),
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.",
             # None algorithm
-            os.environ.get("TEST_JWT_NONE_ALG", "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxIn0."),
+            "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxIn0.",
             # Expired token
             create_access_token({"sub": "1"}, expires_delta=timedelta(seconds=-1)),
             # Wrong signature
-            os.environ.get("TEST_JWT_WRONG_SIG", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.wrong_signature"),
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.wrong_signature",
             # Malformed payload
             "not.a.jwt",
             # Empty token

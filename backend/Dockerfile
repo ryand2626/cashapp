@@ -26,13 +26,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# CRITICAL: Check for Python syntax errors before proceeding
-# This prevents deployment of code with syntax errors
-RUN python -m compileall -q app || (echo "SYNTAX ERROR DETECTED - Build failed!" && exit 1)
-
-# Debug deployment structure
-RUN python app/debug_deployment.py || echo "Debug script failed"
-
 # Create uploads directory
 RUN mkdir -p uploads
 

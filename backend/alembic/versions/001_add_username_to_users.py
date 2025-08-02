@@ -1,5 +1,6 @@
 """Add username field to users table
 
+Revision ID: 001_add_username
 Revises: 
 Create Date: 2025-01-31 12:00:00.000000
 

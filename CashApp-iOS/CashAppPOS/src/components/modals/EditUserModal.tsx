@@ -302,7 +302,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, user, onClose, o
             <TouchableOpacity
               key={tab.key}
               style={[styles.tabButton, activeTab === tab.key && styles.tabButtonActive]}
-onPress={() => setActiveTab(tab.key as unknown)}
+              onPress={() => setActiveTab(tab.key as unknown)}
             >
               <Icon
                 name={tab.icon}
@@ -409,7 +409,7 @@ onPress={() => setActiveTab(tab.key as unknown)}
                           styles.statusOption,
                           formData.status === status && styles.statusOptionSelected,
                         ]}
-onPress={() =>
+                        onPress={() =>
                           setFormData((prev) => ({ ...prev, status: status as unknown }))
                         }
                       >

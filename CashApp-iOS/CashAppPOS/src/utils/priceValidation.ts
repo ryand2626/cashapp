@@ -137,7 +137,7 @@ export const validatePrice = (
  * Safely multiplies price by quantity with validation
  */
 export const calculateItemTotal = (
-price: unknown,
+  price: unknown,
   quantity: unknown,
   context?: CalculationContext
 ): PriceValidationResult => {

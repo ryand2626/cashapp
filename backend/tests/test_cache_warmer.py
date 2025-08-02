@@ -2,8 +2,6 @@
 Test suite for CacheWarmer functionality
 """
 
-
-"""
 import pytest
 import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch

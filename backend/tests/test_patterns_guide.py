@@ -13,7 +13,6 @@ This guide provides patterns for achieving 100% test coverage across all compone
 
 import pytest
 import asyncio
-import os
 from unittest.mock import Mock, patch, AsyncMock, MagicMock
 from datetime import datetime, timedelta
 from decimal import Decimal
@@ -34,7 +33,9 @@ from app.main import app
 from app.core.database import Base, get_db
 from app.core.security import create_access_token, verify_token
 from app.core.redis_client import get_redis_client
-from app.core.database import User, Restaurant, Order
+from app.models.user import User
+from app.models.restaurant import Restaurant
+from app.models.order import Order
 from app.services.redis_service import RedisService
 from app.services.external_api import ExternalAPIClient
 from app.services.background_tasks import process_order_async
@@ -198,7 +199,7 @@ def sample_user(test_db):
         id=1,
         email="test@example.com",
         username="testuser",
-        hashed_password=os.environ.get("TEST_PASSWORD_HASH", "$2b$12$dynamicHashForTesting"),
+        hashed_password="$2b$12$test",
         role="employee",
         restaurant_id=1,
         is_active=True
@@ -240,8 +241,7 @@ class TestAuthenticatedEndpoints:
     
     def test_endpoint_with_invalid_token(self, test_client):
         """Test with invalid token"""
-        import uuid
-        headers = {"Authorization": f"Bearer invalid_token_{uuid.uuid4().hex[:8]}"}
+        headers = {"Authorization": "Bearer invalid_token"}
         response = test_client.get("/api/v1/users/me", headers=headers)
         assert response.status_code == 401
         assert "Could not validate credentials" in response.json()["detail"]
@@ -1091,13 +1091,13 @@ class TestSecurity:
             {},
             # Malformed tokens
             {"Authorization": "Bearer"},
-            {"Authorization": f"Bearer {os.environ.get('TEST_NULL_TOKEN', 'null')}"},
-            {"Authorization": f"Bearer {os.environ.get('TEST_UNDEFINED_TOKEN', 'undefined')}"},
+            {"Authorization": "Bearer null"},
+            {"Authorization": "Bearer undefined"},
             {"Authorization": "Bearer {}"},
             # Wrong auth scheme
-            {"Authorization": f"Basic {os.environ.get('TEST_BASIC_AUTH', 'dGVzdDp0ZXN0')}"},
+            {"Authorization": "Basic dGVzdDp0ZXN0"},
             # JWT manipulation
-            {"Authorization": f"Bearer {os.environ.get('TEST_NONE_ALG_JWT', 'eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxIn0.')}"},
+            {"Authorization": "Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxIn0."},
         ]
         
         for headers in bypass_attempts:

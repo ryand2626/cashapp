@@ -26,9 +26,11 @@ lines.forEach((line) => {
     currentFile = fileMatch[0];
     return;
   }
-  
+
   // Check if this is an error/warning line
-  const issueMatch = line.match(/^\s*(\d+):(\d+)\s+(warning|error)\s+Unexpected any\.\s+Specify a different type\s+@typescript-eslint\/no-explicit-any/);
+  const issueMatch = line.match(
+    /^\s*(\d+):(\d+)\s+(warning|error)\s+Unexpected any\.\s+Specify a different type\s+@typescript-eslint\/no-explicit-any/
+  );
   if (issueMatch && currentFile) {
     const [, lineNum, colNum] = issueMatch;
     if (!fileFixes.has(currentFile)) {
@@ -43,17 +45,17 @@ console.log(`Found ${fileFixes.size} files with no-explicit-any issues`);
 // Process each file
 fileFixes.forEach((issues, filePath) => {
   try {
-    let content = fs.readFileSync(filePath, 'utf8');
+    const content = fs.readFileSync(filePath, 'utf8');
     const lines = content.split('\n');
-    
+
     // Sort issues by line number in reverse order to avoid offset issues
     issues.sort((a, b) => b.line - a.line);
-    
+
     issues.forEach(({ line }) => {
       const lineIndex = line - 1;
       if (lineIndex < lines.length) {
         const currentLine = lines[lineIndex];
-        
+
         // Common patterns to fix
         lines[lineIndex] = currentLine
           // Function parameters
@@ -79,7 +81,7 @@ fileFixes.forEach((issues, filePath) => {
           .replace(/catch\s*\(([^:)]+):\s*any\)/g, 'catch ($1: unknown)');
       }
     });
-    
+
     const newContent = lines.join('\n');
     if (newContent !== content) {
       fs.writeFileSync(filePath, newContent);

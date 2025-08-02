@@ -20,7 +20,7 @@ export interface SubscriptionPlan {
   max_orders_per_month: number | null;
   max_staff_accounts: number | null;
   max_menu_items: number | null;
-  features: Record<string, unknown>;
+  features: Record<string, any>;
   yearly_savings?: number;
   yearly_discount_percentage?: number;
 }
@@ -141,7 +141,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       }
     } catch (err) {
       setError('Failed to load subscription information');
-      logger.error('Subscription load error:', err);
+      console.error('Subscription load error:', err);
     } finally {
       setLoading(false);
     }
@@ -154,7 +154,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
         setAvailablePlans(response.data);
       }
     } catch (err) {
-      logger.error('Failed to load subscription plans:', err);
+      console.error('Failed to load subscription plans:', err);
     }
   };
 
@@ -261,7 +261,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
         setError(response.message);
         return false;
       }
-    } catch (_err) {
+    } catch (err) {
       setError('Failed to create subscription');
       return false;
     } finally {
@@ -289,7 +289,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
         setError(response.message);
         return false;
       }
-    } catch (_err) {
+    } catch (err) {
       setError('Failed to change subscription plan');
       return false;
     } finally {
@@ -313,7 +313,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
         setError(response.message);
         return false;
       }
-    } catch (_err) {
+    } catch (err) {
       setError('Failed to cancel subscription');
       return false;
     } finally {
@@ -354,7 +354,7 @@ export const SubscriptionProvider: React.FC<SubscriptionProviderProps> = ({
       }
       return false;
     } catch (err) {
-      logger.error('Failed to increment usage:', err);
+      console.error('Failed to increment usage:', err);
       return false;
     }
   };

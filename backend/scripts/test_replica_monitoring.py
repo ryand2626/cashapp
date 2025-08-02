@@ -4,8 +4,6 @@ Test script for replica monitoring system.
 Verifies that instance tracking and monitoring endpoints are working correctly.
 """
 
-
-"""
 import asyncio
 import os
 import sys

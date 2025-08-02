@@ -8,6 +8,7 @@ import { Alert } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 
 import API_CONFIG from '../config/api';
+import { logger } from '../utils/logger';
 
 export interface NetworkDiagnostics {
   isConnected: boolean;
@@ -87,7 +88,7 @@ class NetworkDiagnosticsService {
       logger.info('✅ Network diagnostics complete:', diagnostics);
       return diagnostics;
     } catch (error) {
-      logger.error('❌ Network diagnostics failed:', error);
+      console.error('❌ Network diagnostics failed:', error);
       return {
         isConnected: false,
         connectionType: 'unknown',

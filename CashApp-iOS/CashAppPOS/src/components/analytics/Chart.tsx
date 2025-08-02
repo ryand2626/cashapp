@@ -179,9 +179,9 @@ const Chart: React.FC<ChartProps> = ({
 
   const renderPieChart = () => {
     const total = data.reduce((sum, item) => sum + item.value, 0);
-    const _radius = Math.min(chartWidth, height) / 3;
-    const _centerX = chartWidth / 2;
-    const _centerY = height / 2;
+    const radius = Math.min(chartWidth, height) / 3;
+    const centerX = chartWidth / 2;
+    const centerY = height / 2;
 
     return (
       <View style={styles.chartContainer}>

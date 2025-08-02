@@ -5,6 +5,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } fr
 import { SumUpProvider, useSumUp } from 'sumup-react-native-alpha';
 
 import sumUpConfigService from '../../services/SumUpConfigService';
+import { logger } from '../../utils/logger';
 
 interface SumUpTestProps {
   onResult: (message: string) => void;
@@ -54,7 +55,7 @@ const SumUpTestInner: React.FC<SumUpTestProps> = ({ onResult }) => {
         onResult('✅ SumUp initialization successful');
       }
     } catch (error) {
-      logger.error('🧪 SumUp test error:', error);
+      console.error('🧪 SumUp test error:', error);
       Alert.alert('Test Error', error?.toString() || 'Unknown error');
       onResult(`❌ Test error: ${error}`);
     }
@@ -94,7 +95,7 @@ const SumUpTestComponent: React.FC<SumUpTestProps> = (props) => {
         });
         setIsLoading(false);
       } catch (err) {
-        logger.error('❌ Failed to fetch SumUp configuration:', err);
+        console.error('❌ Failed to fetch SumUp configuration:', err);
         setError(err?.message || 'Failed to load configuration');
         setIsLoading(false);
         props.onResult('❌ Failed to load SumUp configuration');

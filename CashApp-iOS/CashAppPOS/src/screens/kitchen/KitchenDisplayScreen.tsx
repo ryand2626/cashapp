@@ -9,7 +9,7 @@ import {
   FlatList,
   Alert,
   Modal,
-  _TextInput,
+  TextInput,
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
@@ -208,7 +208,7 @@ const KitchenDisplayScreen: React.FC = () => {
     }
   };
 
-  const _getOrderPriorityColor = (priority: string) => {
+  const getOrderPriorityColor = (priority: string) => {
     switch (priority) {
       case 'urgent':
         return Colors.danger;

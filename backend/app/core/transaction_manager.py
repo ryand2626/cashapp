@@ -32,6 +32,7 @@ class TransactionManager:
     Manages database transactions with retry logic, rollback handling,
     and atomic operation support.
     """
+    
     def __init__(self, max_retries: int = 3, retry_delay: float = 0.1):
         self.max_retries = max_retries
         self.retry_delay = retry_delay
@@ -50,6 +51,7 @@ class TransactionManager:
                 # Automatically rolled back on exception
         """
         transaction_started = datetime.utcnow()
+        
         try:
             # Begin transaction if not already in one
             if db.in_transaction():
@@ -231,6 +233,7 @@ class BatchTransactionManager:
     """
     Manages batch operations with transaction boundaries and partial failure handling.
     """
+    
     def __init__(self, batch_size: int = 100, rollback_on_partial_failure: bool = True):
         self.batch_size = batch_size
         self.rollback_on_partial_failure = rollback_on_partial_failure

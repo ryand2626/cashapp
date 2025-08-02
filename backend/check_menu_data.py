@@ -27,8 +27,11 @@ with engine.connect() as conn:
         
         # Show sample
         result = conn.execute(text("""
+            SELECT p.name, p.price, c.name as category
+            FROM products p
             JOIN categories c ON p.category_id = c.id
             WHERE p.restaurant_id = :rid
+            LIMIT 5
         """), {"rid": restaurant[0]})
         
         print("\nSample items:")

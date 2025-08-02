@@ -85,7 +85,7 @@ const SignInScreen: React.FC<SignInScreenProps> = ({ onSwitchToSignUp }) => {
           [{ text: 'OK' }]
         );
       }
-} catch (_error) {
+    } catch (_error) {
       Alert.alert('Error', 'An unexpected error occurred. Please try again.', [{ text: 'OK' }]);
     } finally {
       setIsLoading(false);
@@ -117,7 +117,7 @@ const SignInScreen: React.FC<SignInScreenProps> = ({ onSwitchToSignUp }) => {
           { text: 'OK' },
         ]);
       }
-} catch (_error) {
+    } catch (_error) {
       Alert.alert('Error', 'Unable to send password reset email. Please try again.', [
         { text: 'OK' },
       ]);

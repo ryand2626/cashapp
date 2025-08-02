@@ -12,6 +12,7 @@ class ServiceChargeCalculator:
     """
     Calculates the service charge, potentially including transaction fees.
     """
+
     def __init__(
         self,
         payment_fee_calculator: PaymentFeeCalculator,

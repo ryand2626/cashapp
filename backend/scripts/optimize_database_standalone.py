@@ -4,8 +4,6 @@ Standalone Database Optimization Script for Fynlo POS
 Works without app dependencies
 """
 
-
-"""
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
@@ -151,7 +149,6 @@ def check_connection_stats(cursor):
     """)
     
     active_queries = cursor.fetchall()
-"""
     if active_queries:
         print(f"\nActive queries: {len(active_queries)}")
         for q in active_queries[:5]:  # Show first 5
@@ -178,7 +175,6 @@ def check_cache_hit_rates(cursor):
     cache_stats = cursor.fetchone()
     print(f"Cache hit ratio: {cache_stats['cache_hit_ratio']}%")
     
-"""
     if cache_stats['cache_hit_ratio'] < 90:
         print("⚠️  Cache hit ratio is below 90% - consider increasing shared_buffers")
     else:

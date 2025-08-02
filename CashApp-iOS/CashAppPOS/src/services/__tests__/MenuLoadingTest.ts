@@ -11,7 +11,7 @@ const originalFetch = global.fetch;
 
 describe('Menu Loading Performance', () => {
   let dbService: DatabaseService;
-  let _dataService: DataService;
+  let dataService: DataService;
 
   beforeEach(() => {
     dbService = DatabaseService.getInstance();

@@ -255,7 +255,7 @@ const TableManagementScreen: React.FC = () => {
     );
   };
 
-const _assignServer = (tableId: string, serverName: string) => {
+  const _assignServer = (tableId: string, serverName: string) => {
     setTables((prev) =>
       prev.map((table) => (table.id === tableId ? { ...table, server: serverName } : table))
     );
@@ -271,7 +271,7 @@ const _assignServer = (tableId: string, serverName: string) => {
   };
 
   const handleTableDrag = useCallback(
-(tableId: string, gestureState: unknown) => {
+    (tableId: string, gestureState: unknown) => {
       if (!editMode) return;
 
       // Snap to grid

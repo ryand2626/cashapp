@@ -6,7 +6,6 @@ from httpx import AsyncClient
 import jwt
 from datetime import datetime, timedelta
 import uuid
-import os
 from app.main import app
 
 
@@ -38,13 +37,12 @@ class TestAuthenticationSecurity:
     
     async def test_invalid_token_rejected(self):
         """Test that invalid tokens are rejected"""
-        import uuid
         invalid_tokens = [
-            f"invalid_token_{uuid.uuid4().hex[:8]}",
-            f"Bearer invalid_token_{uuid.uuid4().hex[:8]}",
+            "invalid_token",
+            "Bearer invalid_token",
             "",
             "Bearer ",
-            jwt.encode({"sub": "user"}, os.environ.get("TEST_WRONG_SECRET", "wrong_secret_dynamic"), algorithm="HS256"),
+            jwt.encode({"sub": "user"}, "wrong_secret", algorithm="HS256"),
         ]
         
         async with AsyncClient(app=app, base_url="http://test") as client:
@@ -154,14 +152,14 @@ class TestAuthenticationSecurity:
             # Missing auth header variations
             {},
             {"Authorization": ""},
-            {"Authorization": os.environ.get("TEST_NULL_AUTH", "null")},
-            {"Authorization": os.environ.get("TEST_UNDEFINED_AUTH", "undefined")},
-            {"Authorization": f"Bearer {os.environ.get('TEST_NULL_TOKEN', 'null')}"},
-            {"Authorization": f"Bearer {os.environ.get('TEST_UNDEFINED_TOKEN', 'undefined')}"},
+            {"Authorization": "null"},
+            {"Authorization": "undefined"},
+            {"Authorization": "Bearer null"},
+            {"Authorization": "Bearer undefined"},
             # SQL injection in auth
-            {"Authorization": f"Bearer {os.environ.get('TEST_SQL_INJECTION', \"' OR '1'='1\")}"},
+            {"Authorization": "Bearer ' OR '1'='1"},
             # Header injection
-            {"Authorization": f"Bearer {os.environ.get('TEST_HEADER_INJECTION', 'token\\r\\nX-Admin: true')}"},
+            {"Authorization": "Bearer token\r\nX-Admin: true"},
         ]
         
         async with AsyncClient(app=app, base_url="http://test") as client:

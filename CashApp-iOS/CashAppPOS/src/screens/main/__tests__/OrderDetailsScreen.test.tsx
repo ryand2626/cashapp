@@ -129,7 +129,7 @@ describe('OrderDetailsScreen', () => {
   });
 
   it('navigates back when back button is pressed', () => {
-const { _getByTestId } = render(
+    const { _getByTestId } = render(
       // Assuming back button has a testID or accessible label
       <View>{/* Minimal structure to allow finding the button if it's part of header */}</View>
     );

@@ -23,7 +23,7 @@ const UserProfileScreen: React.FC = () => {
   const { user, updateUser, signOut } = useAuth();
   const { theme } = useTheme();
   const styles = useThemedStyles(createStyles);
-const [_isEditing, setIsEditing] = useState(false);
+  const [_isEditing, setIsEditing] = useState(false);
   const [_isLoading, setIsLoading] = useState(false);
 
   // Safe user data with fallbacks

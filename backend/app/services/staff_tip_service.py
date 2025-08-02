@@ -14,6 +14,7 @@ class StaffTipService:
     Manages the distribution of tips to staff members,
     accounting for service charges and transaction fees.
     """
+
     def __init__(self, db: Session):
         self.db = db
 

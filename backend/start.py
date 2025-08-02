@@ -4,8 +4,6 @@ Minimal startup script for DigitalOcean deployment
 Uses minimal app without external dependencies
 """
 
-
-"""
 import os
 import uvicorn
 

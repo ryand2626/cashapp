@@ -11,7 +11,7 @@ const warningsContent = fs.readFileSync(warningsFile, 'utf8');
 const warnings = [];
 const lines = warningsContent.split('\n');
 
-lines.forEach(line => {
+lines.forEach((line) => {
   // Match pattern: filepath:line:col warning message
   const match = line.match(/^(.+):(\d+):(\d+)\s+warning\s+(.+)/);
   if (match) {
@@ -19,14 +19,14 @@ lines.forEach(line => {
       file: match[1],
       line: parseInt(match[2]),
       col: parseInt(match[3]),
-      message: match[4]
+      message: match[4],
     });
   }
 });
 
 // Group warnings by file
 const warningsByFile = {};
-warnings.forEach(warning => {
+warnings.forEach((warning) => {
   if (!warningsByFile[warning.file]) {
     warningsByFile[warning.file] = [];
   }
@@ -39,7 +39,7 @@ const sortedFiles = Object.entries(warningsByFile)
   .map(([file, warnings]) => ({
     file,
     warnings,
-    count: warnings.length
+    count: warnings.length,
   }));
 
 console.log('\n=== React Native Style Warnings Summary ===\n');
@@ -55,10 +55,12 @@ sortedFiles.slice(0, 10).forEach(({ file, count }) => {
 
 // Count warning types
 const warningTypes = {};
-warnings.forEach(warning => {
-  const type = warning.message.includes('Unused style') ? 'unused-styles' :
-               warning.message.includes('Inline style') ? 'inline-styles' :
-               'other';
+warnings.forEach((warning) => {
+  const type = warning.message.includes('Unused style')
+    ? 'unused-styles'
+    : warning.message.includes('Inline style')
+    ? 'inline-styles'
+    : 'other';
   warningTypes[type] = (warningTypes[type] || 0) + 1;
 });
 
@@ -69,13 +71,20 @@ Object.entries(warningTypes).forEach(([type, count]) => {
 
 // Export data for processing
 const outputFile = path.join(__dirname, 'warnings-analysis.json');
-fs.writeFileSync(outputFile, JSON.stringify({
-  summary: {
-    total: warnings.length,
-    files: sortedFiles.length,
-    types: warningTypes
-  },
-  fileList: sortedFiles
-}, null, 2));
+fs.writeFileSync(
+  outputFile,
+  JSON.stringify(
+    {
+      summary: {
+        total: warnings.length,
+        files: sortedFiles.length,
+        types: warningTypes,
+      },
+      fileList: sortedFiles,
+    },
+    null,
+    2
+  )
+);
 
 console.log(`\nAnalysis saved to: warnings-analysis.json`);

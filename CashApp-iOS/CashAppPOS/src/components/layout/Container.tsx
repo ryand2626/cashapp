@@ -171,13 +171,11 @@ export const Spacer: React.FC<SpacerProps> = ({
   const currentSize = useResponsiveValue(size, 4);
   const spacingValue = theme.spacing[currentSize];
 
-  const spacerStyle = horizontal
-    ? { width: spacingValue }
-    : { height: spacingValue };
-
   return (
     <View
-      style={spacerStyle}
+      style={{
+        [horizontal ? 'width' : 'height']: spacingValue,
+      }}
     />
   );
 };
@@ -214,7 +212,6 @@ export const Row: React.FC<RowProps> = ({
   style,
 }) => {
   const { theme } = useTheme();
-  const styles = createStyles(theme);
   const currentSpacing = useResponsiveValue(spacingProp, 3);
   const spacingValue = theme.spacing[currentSpacing];
 
@@ -224,22 +221,20 @@ export const Row: React.FC<RowProps> = ({
     return (
       <React.Fragment key={index}>
         {child}
-        {!isLast && <View style={[styles.spacer, { width: spacingValue }]} />}
+        {!isLast && <View style={{ width: spacingValue }} />}
       </React.Fragment>
     );
   });
 
-  const dynamicRowStyle = {
-    alignItems: align,
-    justifyContent: justify,
-    flexWrap: wrap ? 'wrap' : 'nowrap',
-  } as ViewStyle;
-
   return (
     <View
       style={[
-        styles.row,
-        dynamicRowStyle,
+        {
+          flexDirection: 'row',
+          alignItems: align,
+          justifyContent: justify,
+          flexWrap: wrap ? 'wrap' : 'nowrap',
+        },
         style,
       ]}
     >
@@ -252,12 +247,6 @@ const createStyles = (theme: Theme) =>
   StyleSheet.create({
     container: {
       width: '100%',
-    },
-    row: {
-      flexDirection: 'row',
-    },
-    spacer: {
-      // Base spacer style - width will be set dynamically
     },
     section: {
       width: '100%',
@@ -274,43 +263,6 @@ const createStyles = (theme: Theme) =>
     sectionSubtitle: {
       fontSize: theme.typography.fontSize.lg,
       color: theme.colors.neutral[600],
-    },
-    row: {
-      flexDirection: 'row',
-      flexWrap: 'nowrap',
-    },
-    rowWrap: {
-      flexWrap: 'wrap',
-    },
-    rowAlignStart: {
-      alignItems: 'flex-start',
-    },
-    rowAlignCenter: {
-      alignItems: 'center',
-    },
-    rowAlignEnd: {
-      alignItems: 'flex-end',
-    },
-    rowAlignStretch: {
-      alignItems: 'stretch',
-    },
-    rowJustifyStart: {
-      justifyContent: 'flex-start',
-    },
-    rowJustifyCenter: {
-      justifyContent: 'center',
-    },
-    rowJustifyEnd: {
-      justifyContent: 'flex-end',
-    },
-    rowJustifyBetween: {
-      justifyContent: 'space-between',
-    },
-    rowJustifyAround: {
-      justifyContent: 'space-around',
-    },
-    rowJustifyEvenly: {
-      justifyContent: 'space-evenly',
     },
   });
 

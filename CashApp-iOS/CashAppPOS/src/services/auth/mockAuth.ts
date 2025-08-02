@@ -99,7 +99,7 @@ class MockAuthService {
     return session;
   }
 
-onAuthStateChange(_callback: (event: string, session: unknown) => void) {
+  onAuthStateChange(_callback: (event: string, session: unknown) => void) {
     // Mock implementation - just return unsubscribe function
     return {
       data: { subscription: null },

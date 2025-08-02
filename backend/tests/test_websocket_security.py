@@ -3,8 +3,6 @@ WebSocket Security Test Suite for Fynlo POS
 Tests authentication, authorization, rate limiting, and multi-tenant isolation
 """
 
-
-"""
 import asyncio
 import json
 import pytest

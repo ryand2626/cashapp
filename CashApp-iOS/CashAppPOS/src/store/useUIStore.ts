@@ -17,7 +17,7 @@ interface UIStore extends UIState {
   toggleTheme: () => void;
 }
 
-const useUIStore = create<UIStore>((set, _get) => ({
+const useUIStore = create<UIStore>((set, get) => ({
   // Initial state
   selectedCategory: 'All',
   showPaymentModal: false,

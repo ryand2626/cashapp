@@ -11,7 +11,9 @@
     "businessId": "platform1",
     "isActive": true,
     "platformId": "platform1",
-    "managedRestaurants": ["restaurant1"]
+    "managedRestaurants": [
+      "restaurant1"
+    ]
   },
   {
     "id": "user1",

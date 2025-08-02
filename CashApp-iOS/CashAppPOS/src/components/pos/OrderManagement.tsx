@@ -44,7 +44,7 @@ interface OrderManagementProps {
 }
 
 const OrderManagement: React.FC<OrderManagementProps> = ({ visible, onClose, onCheckout }) => {
-const { cart, updateCartItem, removeFromCart, clearCart, _cartTotal, _cartItemCount } =
+  const { cart, updateCartItem, removeFromCart, clearCart, _cartTotal, _cartItemCount } =
     useAppStore();
 
   const { taxConfiguration } = useSettingsStore();

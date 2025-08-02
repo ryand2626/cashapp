@@ -89,11 +89,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
       onPress={handlePress}
       disabled={disabled}
       activeOpacity={0.8}
-      style={[
-        styles.container,
-        dynamicStyles.container,
-        disabled && styles.containerDisabled,
-      ]}
+      style={[styles.container, dynamicStyles.container, disabled && styles.containerDisabled]}
     >
       <Animated.View
         style={[
